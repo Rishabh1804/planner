@@ -2,7 +2,10 @@
 
 Use this checklist before and after structural changes.
 
-Before every user-visible release, cross-reference [`docs/BUGS.md`](./BUGS.md) and run the active regression checklist there.
+Before every user-visible release:
+
+- Cross-reference [`docs/BUGS.md`](./BUGS.md) and run the active regression checklist there.
+- Cross-reference [`docs/synthesis/INDEX.md`](./synthesis/INDEX.md) for any feature/tab/module interactions affected by the change.
 
 ## QA Snapshot — 2026-05-05 — Live v1 before module wiring
 
@@ -35,6 +38,7 @@ Before every user-visible release, cross-reference [`docs/BUGS.md`](./BUGS.md) a
 - Confirm service worker registers without fatal console errors.
 - Confirm saved state survives refresh.
 - Cross-reference `docs/BUGS.md` active regression checklist.
+- Cross-reference `docs/synthesis/INDEX.md` for affected product interactions.
 
 ### Required retest after first wired module
 
@@ -44,6 +48,7 @@ Before every user-visible release, cross-reference [`docs/BUGS.md`](./BUGS.md) a
 - Confirm no duplicate event handling.
 - Confirm no service-worker stale-cache regression.
 - Cross-reference `docs/BUGS.md` active regression checklist.
+- Cross-reference `docs/synthesis/INDEX.md` for affected product interactions.
 
 ---
 
