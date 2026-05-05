@@ -177,3 +177,21 @@
 - `src/ui/tabs.js` defines future tab activation and binding helpers.
 - `src/ui/index.js` is the stable export boundary for future UI imports.
 - Screen-specific UI extraction should happen last and only after parity checks.
+
+## 2026-05-05 — Extract Options cleanly, not through runtime patching
+
+**Decision:** The Options Density + Comparison Cockpit upgrade will not be implemented as an `app.js` runtime enhancer over the legacy Options DOM.
+
+**Rationale:**
+
+- Runtime patching can create a visually improved UI while leaving two inconsistent implementations underneath.
+- Options is a core decision surface, so its markup, renderer contract, and state dependencies need one governed source path.
+- The project already has bugs around duplicate runtime, horizontal scroll, and Planner interaction regressions; layering a cockpit enhancer would increase those risks.
+
+**Consequences:**
+
+- `docs/contracts/options-contract.md` defines the live Options extraction contract.
+- `docs/qa/options-live-replacement.md` defines the QA gate for the first live Options replacement.
+- The existing `app.js` boot guard should not become an Options UI patch layer.
+- New Options code should be built as source modules and wired only when it can replace the legacy Options section cleanly.
+- A live replacement should preserve or deliberately migrate existing render targets in the same change.
