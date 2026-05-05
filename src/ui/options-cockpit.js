@@ -9,7 +9,9 @@ export const OPTIONS_COCKPIT_LENSES = [
   { id: 'baby', label: 'Baby comfort', dimension: 'babyEase' },
   { id: 'fatigue', label: 'Low fatigue', dimension: 'fatigueLevel' },
   { id: 'honeymoon', label: 'Honeymoon value', dimension: 'honeymoonValue' },
-  { id: 'budget', label: 'Budget control', dimension: 'budgetPressure' }
+  { id: 'budget', label: 'Budget control', dimension: 'budgetPressure' },
+  { id: 'seasonality', label: 'Season fit', dimension: 'seasonalityFit' },
+  { id: 'localDepth', label: 'City depth', dimension: 'destinationDepth' }
 ];
 
 export const OPTIONS_WINNER_SLOTS = [
@@ -33,8 +35,23 @@ const FALLBACK_RECOMMENDATION = {
   fatigueLevel: { label: 'Pending', tone: 'neutral' },
   babyEase: { label: 'Pending', tone: 'neutral' },
   honeymoonValue: { label: 'Pending', tone: 'neutral' },
+  flightFit: null,
+  hotelFit: null,
+  seasonalityFit: null,
+  restaurantDepth: null,
+  shoppingProfile: null,
+  photoValue: null,
+  localMovementBurden: null,
+  destinationDepth: null,
+  activityDensity: null,
+  confidence: null,
+  dataFreshness: null,
+  sourceSummary: null,
+  budgetEnvelope: null,
   primaryWarning: null,
+  warnings: [],
   reasons: [],
+  tradeoffs: [],
   readyImplications: [],
   decidePrompts: []
 };
@@ -44,28 +61,36 @@ const LABEL_SCORE = new Map([
   ['strong', 90],
   ['high', 82],
   ['good', 74],
+  ['deep', 74],
+  ['rich', 74],
+  ['easy', 72],
+  ['low', 24],
   ['medium', 52],
   ['moderate', 52],
   ['mixed', 48],
   ['watch', 42],
-  ['low', 24],
+  ['limited', 34],
   ['weak', 18],
+  ['hard', 18],
   ['risky', 12],
   ['pending', 0]
 ]);
 
 export function normalizeOptionRecommendation(rawOption = {}) {
-  const option = { ...FALLBACK_RECOMMENDATION, ...rawOption };
+  const safeRawOption = rawOption && typeof rawOption === 'object' ? rawOption : {};
+  const option = { ...FALLBACK_RECOMMENDATION, ...safeRawOption };
 
   return {
     ...option,
     id: String(option.id || option.title || FALLBACK_RECOMMENDATION.id),
     title: String(option.title || FALLBACK_RECOMMENDATION.title),
     fitScore: Number.isFinite(Number(option.fitScore)) ? Number(option.fitScore) : 0,
-    chips: Array.isArray(option.chips) ? option.chips.slice(0, 5) : [],
-    reasons: Array.isArray(option.reasons) ? option.reasons : [],
-    readyImplications: Array.isArray(option.readyImplications) ? option.readyImplications : [],
-    decidePrompts: Array.isArray(option.decidePrompts) ? option.decidePrompts : []
+    chips: normalizeList(option.chips, 5),
+    warnings: normalizeList(option.warnings),
+    reasons: normalizeList(option.reasons),
+    tradeoffs: normalizeList(option.tradeoffs),
+    readyImplications: normalizeList(option.readyImplications),
+    decidePrompts: normalizeList(option.decidePrompts)
   };
 }
 
@@ -74,7 +99,8 @@ export function createOptionsViewModel({
   budgetEnvelope = null,
   recommendations = [],
   activeLens = 'balanced',
-  shortlist = []
+  shortlist = [],
+  catalogSummary = null
 } = {}) {
   const sourceRecommendations = Array.isArray(recommendations) ? recommendations : [];
   const normalizedRecommendations = sourceRecommendations.length
@@ -84,6 +110,7 @@ export function createOptionsViewModel({
   return {
     plannerSummary,
     budgetEnvelope,
+    catalogSummary,
     lenses: OPTIONS_COCKPIT_LENSES,
     activeLens,
     winnerSlots: deriveWinnerSlots(normalizedRecommendations),
@@ -132,7 +159,7 @@ function scoreValue(value) {
   if (value && typeof value === 'object') {
     if (Number.isFinite(Number(value.score))) return Number(value.score);
     if (Number.isFinite(Number(value.value))) return Number(value.value);
-    return scoreLabel(value.label || value.tone || '');
+    return scoreLabel(value.label || value.tone || value.summary || value.status || '');
   }
 
   return scoreLabel(value);
@@ -164,11 +191,16 @@ function deriveWinnerReason(slot, option) {
   }
 }
 
-function readableMetric(value) {
+export function readableMetric(value) {
   if (!value) return '';
   if (typeof value === 'string') return value;
-  if (typeof value === 'object') return value.label || value.tone || '';
+  if (typeof value === 'object') return value.label || value.summary || value.tone || value.status || '';
   return String(value);
+}
+
+function normalizeList(value, limit = Infinity) {
+  const list = Array.isArray(value) ? value : [];
+  return list.slice(0, limit);
 }
 
 export function createOptionSignal(option, signalType, metadata = {}) {
