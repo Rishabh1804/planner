@@ -11,7 +11,7 @@ Use it before changing a feature, tab, module, or release behavior that touches 
 | `2026-05-05-planner-options.md` | Pair | Planner ↔ Options | Active | Planner flow, recommendation cards, budget derivation, destination ranking |
 | `2026-05-05-planner-decide.md` | Pair | Planner ↔ Decide | Active | Guided Plan builder, scenario exploration, preference signals, decision capture |
 | `2026-05-05-options-ready.md` | Pair | Options ↔ Ready | Active | Destination cards, shortlist logic, selected option flow, booking-readiness checklist |
-| `2026-05-05-data-engine.md` | Pair | Data ↔ Engine | Active | Destination catalog, scoring logic, budget assumptions, recommendation ranking |
+| `data-engine.md` | Pair | Data ↔ Engine | Active | Destination catalog, scoring logic, budget assumptions, recommendation ranking |
 | `2026-05-05-planner-options-decide-compound.md` | Compound | Planner → Options → Decide | Active | Full planning loop, recommendation feedback, decision confidence, signal compounding |
 
 ## Planned synthesis reports
@@ -50,6 +50,7 @@ Example:
 - Planner ↔ Options says Planner owns intent and Options derives recommendations.
 - Planner ↔ Decide says Planner owns setup and Decide owns scenario exploration.
 - Options ↔ Ready says Options recommends and Ready prepares.
-- Together, they imply a future compound report: Planner → Options → Decide → Ready.
+- Data ↔ Engine says facts and reasoning must stay separate.
+- Together, they imply future compound reports such as Planner → Options → Decide → Ready and State → Data → Engine → UI.
 
-That compound report should define how a user moves from setup to recommendation to reaction to execution readiness without duplicating state or overloading any one tab.
+Those compound reports should define how a user moves from setup to recommendation to reaction to execution readiness without duplicating state or overloading any one tab.
