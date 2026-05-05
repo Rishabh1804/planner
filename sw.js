@@ -1,6 +1,7 @@
-const CACHE_NAME = 'holiday-planner-v2';
+const CACHE_NAME = 'holiday-planner-v3';
 const STATIC_ASSETS = [
   './styles.css',
+  './src/ui/options-view.css',
   './app.js',
   './manifest.json',
   './assets/icons/icon.svg'
