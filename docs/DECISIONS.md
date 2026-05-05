@@ -124,3 +124,21 @@
 - The live runtime remains inline in `index.html` for now.
 - Experience tiers, destination modes, first-reaction choices, preference markers, scenario choices, and decision signals now have a source-module scaffold.
 - Future extraction can add larger catalogs in separate files instead of expanding one oversized module.
+
+## 2026-05-05 — Add non-wired engine scaffolds
+
+**Decision:** Add pure engine scaffolds for scoring, budget envelopes, and recommendation ranking before wiring them into the live app.
+
+**Rationale:**
+
+- Scoring, budget, and ranking logic should be testable without DOM or storage dependencies.
+- Engine extraction should happen after state and data boundaries exist, but before UI extraction.
+- Keeping the helpers non-wired protects the live Pages baseline while the module shape is reviewed.
+
+**Consequences:**
+
+- The live runtime remains inline in `index.html` for now.
+- `src/engine/scoring.js` defines score weights and weighted-score helpers.
+- `src/engine/budget.js` defines experience-tier budget multipliers and range formatting helpers.
+- `src/engine/recommendations.js` defines pure ranking helpers.
+- `src/engine/index.js` is the stable export boundary for future app wiring.
