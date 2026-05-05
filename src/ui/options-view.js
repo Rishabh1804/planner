@@ -6,7 +6,8 @@
 
 import {
   createOptionsViewModel,
-  normalizeOptionRecommendation
+  normalizeOptionRecommendation,
+  readableMetric
 } from './options-cockpit.js';
 
 export const OPTIONS_VIEW_TARGETS = Object.freeze({
@@ -31,6 +32,24 @@ export const OPTIONS_VIEW_TARGETS = Object.freeze({
   flightDataNote: 'flightDataNote',
   flightOptionList: 'flightOptionList'
 });
+
+const PRIMARY_SIGNAL_FIELDS = [
+  ['Budget', 'budgetPressure'],
+  ['Fatigue', 'fatigueLevel'],
+  ['Baby', 'babyEase'],
+  ['Honeymoon', 'honeymoonValue']
+];
+
+const CATALOG_SIGNAL_FIELDS = [
+  ['Flight', 'flightFit'],
+  ['Hotel', 'hotelFit'],
+  ['Season', 'seasonalityFit'],
+  ['Food', 'restaurantDepth'],
+  ['Shopping', 'shoppingProfile'],
+  ['Photos', 'photoValue'],
+  ['Local movement', 'localMovementBurden'],
+  ['City depth', 'destinationDepth']
+];
 
 export function createOptionsView(optionsInput = {}) {
   const viewModel = createOptionsViewModel(optionsInput);
@@ -58,6 +77,7 @@ export function renderOptionsCockpit(viewModelInput = {}) {
         <h3 class="options-cockpit__title">Best-fit directions at a glance</h3>
         <p class="options-cockpit__summary">${escapeHtml(viewModel.plannerSummary || 'Complete the Planner to compare fatigue, baby comfort, honeymoon value, and budget pressure.')}</p>
       </div>
+      ${renderCatalogSummary(viewModel.catalogSummary)}
       ${renderWinnerStrip(viewModel.winnerSlots)}
       ${renderLensStrip(viewModel.lenses, viewModel.activeLens)}
     </article>
@@ -136,12 +156,9 @@ export function renderCompactRecommendationCard(optionInput = {}) {
         </div>
         <span class="options-fit-badge">${escapeHtml(option.fitLabel || 'Fit pending')}</span>
       </div>
-      <div class="options-chip-row" aria-label="Option signals">
-        ${renderMetricChip('Budget', option.budgetPressure)}
-        ${renderMetricChip('Fatigue', option.fatigueLevel)}
-        ${renderMetricChip('Baby', option.babyEase)}
-        ${renderMetricChip('Honeymoon', option.honeymoonValue)}
-      </div>
+      ${renderSignalRow(option, PRIMARY_SIGNAL_FIELDS, 'Option signals')}
+      ${renderSignalRow(option, CATALOG_SIGNAL_FIELDS, 'Catalog-derived signals')}
+      ${renderConfidenceRow(option)}
       ${renderOptionChips(option.chips)}
       <div class="options-card-actions">
         <button class="options-action-chip primary" type="button" data-options-action="shortlist" data-option-id="${escapeAttribute(option.id)}">Shortlist</button>
@@ -151,11 +168,43 @@ export function renderCompactRecommendationCard(optionInput = {}) {
   `.trim();
 }
 
+function renderSignalRow(option, fields, ariaLabel) {
+  const chips = fields
+    .map(([label, field]) => renderMetricChip(label, option[field]))
+    .filter(Boolean);
+
+  if (!chips.length) return '';
+
+  return `
+    <div class="options-chip-row" aria-label="${escapeAttribute(ariaLabel)}">
+      ${chips.join('')}
+    </div>
+  `.trim();
+}
+
 function renderMetricChip(label, metric) {
-  const readable = readableMetric(metric) || 'Pending';
-  const tone = metric && typeof metric === 'object' ? metric.tone : '';
+  const readable = readableMetric(metric);
+  if (!readable) return '';
+
+  const tone = metric && typeof metric === 'object' ? metric.tone || metric.status : '';
 
   return `<span class="options-comparison-chip" data-tone="${escapeAttribute(tone || 'neutral')}">${escapeHtml(label)}: ${escapeHtml(readable)}</span>`;
+}
+
+function renderConfidenceRow(option) {
+  const chips = [
+    renderMetricChip('Confidence', option.confidence),
+    renderMetricChip('Freshness', option.dataFreshness),
+    renderMetricChip('Source', option.sourceSummary)
+  ].filter(Boolean);
+
+  if (!chips.length) return '';
+
+  return `
+    <div class="options-chip-row options-chip-row--meta" aria-label="Data confidence">
+      ${chips.join('')}
+    </div>
+  `.trim();
 }
 
 function renderOptionChips(chips = []) {
@@ -176,6 +225,17 @@ function renderShortlistPlaceholder(shortlist = []) {
   return `
     <strong>Shortlist:</strong>
     ${shortlist.map((item) => `<span class="options-comparison-chip">${escapeHtml(item.title || item.name || item)}</span>`).join('')}
+  `.trim();
+}
+
+function renderCatalogSummary(catalogSummary) {
+  const readable = readableMetric(catalogSummary);
+  if (!readable) return '';
+
+  return `
+    <div class="options-catalog-summary">
+      ${escapeHtml(readable)}
+    </div>
   `.trim();
 }
 
@@ -217,13 +277,6 @@ export function renderOptionsSecondaryPanels() {
       </details>
     </div>
   `.trim();
-}
-
-function readableMetric(value) {
-  if (!value) return '';
-  if (typeof value === 'string') return value;
-  if (typeof value === 'object') return value.label || value.tone || '';
-  return String(value);
 }
 
 function escapeHtml(value = '') {
