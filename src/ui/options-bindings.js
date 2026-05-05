@@ -82,6 +82,10 @@ export function showOptionsComparePanel(root, content = '') {
   const panel = root?.querySelector('#comparePanel');
   if (!panel) return;
 
-  panel.innerHTML = content;
+  panel.textContent = content;
   panel.style.display = content ? '' : 'none';
+}
+
+export function clearOptionsComparePanel(root) {
+  showOptionsComparePanel(root, '');
 }
