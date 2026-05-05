@@ -2,6 +2,47 @@
 
 Use this checklist before and after structural changes.
 
+## QA Snapshot — 2026-05-05 — Live v1 before module wiring
+
+### Live status
+
+- GitHub Pages URL: `https://rishabh1804.github.io/planner/`.
+- Live runtime status: full Planner runtime remains inline in root `index.html`.
+- Root `app.js` status: service-worker boot guard only.
+- Source modules status: `src/state`, `src/data`, `src/engine`, `src/pwa`, and `src/ui` scaffolds exist but are not wired into the live app.
+
+### User-confirmed mobile smoke test
+
+- Page loads successfully.
+- Planner date, experience tier, and destination direction selections work.
+- Plan mode has no horizontal scrolling.
+
+### Current structural safety notes
+
+- No live runtime wiring changed after the smoke test.
+- Existing `augustFamilyHoneymoon.*.v431` localStorage keys remain the active production storage contract.
+- `holidayPlanner.*.v1` migration helpers exist but do not run automatically.
+- Service-worker navigation remains network-first.
+- Screen-specific UI extraction has not started.
+
+### Required retest before first wired module
+
+- Hard refresh the live Pages URL.
+- Confirm Planner selections still work.
+- Confirm no steady-state horizontal scroll in Plan mode.
+- Confirm service worker registers without fatal console errors.
+- Confirm saved state survives refresh.
+
+### Required retest after first wired module
+
+- Repeat the full mobile smoke test.
+- Test one existing saved-state scenario.
+- Test one clean-browser/no-storage scenario.
+- Confirm no duplicate event handling.
+- Confirm no service-worker stale-cache regression.
+
+---
+
 ## Boot
 
 - Root `index.html` loads on GitHub Pages.
