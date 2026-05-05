@@ -4,6 +4,12 @@ This index tracks all Holiday Planner synthesis reports.
 
 Use it before changing a feature, tab, module, or release behavior that touches more than one product area.
 
+## Major upgrade synthesis packs
+
+| Upgrade | Status | Reports | Use before changing |
+|---|---|---|---|
+| Major Upgrade 1 — Options Density + Comparison Cockpit | Active | `2026-05-05-options-density-upgrade.md`, `2026-05-05-options-decide-density.md`, `2026-05-05-options-engine-density.md`, `2026-05-05-options-decide-ready-density-compound.md` | Options layout, compact cards, comparison chips, shortlist flow, expanded details, Decide/Ready handoff |
+
 ## Active synthesis map
 
 | Report | Type | Areas | Status | Use before changing |
@@ -13,6 +19,10 @@ Use it before changing a feature, tab, module, or release behavior that touches 
 | `2026-05-05-options-ready.md` | Pair | Options ↔ Ready | Active | Destination cards, shortlist logic, selected option flow, booking-readiness checklist |
 | `data-engine.md` | Pair | Data ↔ Engine | Active | Destination catalog, scoring logic, budget assumptions, recommendation ranking |
 | `2026-05-05-planner-options-decide-compound.md` | Compound | Planner → Options → Decide | Active | Full planning loop, recommendation feedback, decision confidence, signal compounding |
+| `2026-05-05-options-density-upgrade.md` | Upgrade | Options | Active | Options vertical density, comparison cockpit, progressive disclosure |
+| `2026-05-05-options-decide-density.md` | Pair | Options ↔ Decide | Active | Compact cards, reaction handoff, scenario boundary |
+| `2026-05-05-options-engine-density.md` | Pair | Options UI ↔ Engine output | Active | Recommendation labels, chips, budget pressure, structured output |
+| `2026-05-05-options-decide-ready-density-compound.md` | Compound | Options → Decide → Ready | Active | Compact recommendation flow into reaction and readiness |
 
 ## Planned synthesis reports
 
@@ -51,6 +61,7 @@ Example:
 - Planner ↔ Decide says Planner owns setup and Decide owns scenario exploration.
 - Options ↔ Ready says Options recommends and Ready prepares.
 - Data ↔ Engine says facts and reasoning must stay separate.
+- Options Density ↔ Engine Output says compact UI must still be backed by structured recommendation output.
 - Together, they imply future compound reports such as Planner → Options → Decide → Ready and State → Data → Engine → UI.
 
 Those compound reports should define how a user moves from setup to recommendation to reaction to execution readiness without duplicating state or overloading any one tab.
