@@ -30,10 +30,34 @@ body {
   min-width: 0;
 }
 
+/* Global live-shell correction after the tab reduction to four tabs. */
+.tabs {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+#tab-options:checked ~ .tabs-wrap label[for="tab-options"] {
+  background: var(--lav-light);
+  color: var(--lav-text);
+}
+
+#tab-options:checked ~ #options {
+  display: block;
+}
+
 .options-panel {
   width: 100%;
   max-width: 100%;
+  padding-inline: 0;
   overflow: hidden;
+  contain: layout paint;
+}
+
+.options-panel::before,
+.options-panel::after,
+.options-panel *::before,
+.options-panel *::after {
+  content: none !important;
+  display: none !important;
 }
 
 .options-panel .section-title,
@@ -58,6 +82,16 @@ body {
   gap: var(--space-grid-gap, var(--space-3-5, 14px));
 }
 
+.options-view > *,
+.options-panel .recommendation-module,
+.options-panel .planner-module,
+.options-panel [class*="card-domain-"],
+.options-cockpit,
+.options-primary-card {
+  width: 100%;
+  max-width: 100%;
+}
+
 .options-cockpit,
 .options-primary-card {
   gap: var(--space-card-gap, var(--space-3, 12px));
@@ -73,9 +107,22 @@ body {
 .options-panel .card,
 .options-cockpit,
 .options-primary-card,
-.options-secondary-panel {
+.options-secondary-panel,
+.options-panel .recommendation-module,
+.options-panel .planner-module {
   max-width: 100%;
   border-radius: var(--r-xl, 24px);
+  border: 1px solid rgba(88, 68, 58, 0.08);
+  border-left: 1px solid rgba(88, 68, 58, 0.08) !important;
+  background-clip: padding-box;
+  overflow: hidden;
+}
+
+.options-panel .recommendation-module,
+.options-panel .planner-module,
+.options-panel [class*="card-domain-"] {
+  transform: none !important;
+  isolation: isolate;
 }
 
 .options-cockpit__hero {
@@ -236,12 +283,7 @@ body {
   box-shadow:
     inset 0 0 0 1px rgba(88, 68, 58, 0.08),
     0 6px 18px rgba(74, 55, 47, 0.06);
-  border-left: 0;
-}
-
-.options-panel .recommendation-card::before,
-.options-panel .recommendation-card::after {
-  content: none !important;
+  border: 1px solid rgba(88, 68, 58, 0.08) !important;
 }
 
 .options-compact-card__head,
@@ -438,6 +480,16 @@ body {
 }
 
 @media (max-width: 760px) {
+  .tabs {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    justify-content: stretch;
+    overflow-x: hidden;
+  }
+
+  .tab-btn {
+    min-width: 0;
+  }
+
   .options-panel .section-title {
     margin: var(--space-4, 16px) var(--space-1, 4px) var(--space-2, 8px);
   }
