@@ -26,7 +26,8 @@ export {
   createOptionsViewModel,
   deriveWinnerSlots,
   isOptionsViewModel,
-  normalizeOptionRecommendation
+  normalizeOptionRecommendation,
+  readableMetric
 } from './options-cockpit.js';
 
 export {
@@ -45,6 +46,7 @@ export {
 export {
   OPTIONS_ACTIONS,
   bindOptionsView,
+  clearOptionsComparePanel,
   setActiveOptionsLens,
   showOptionsComparePanel
 } from './options-bindings.js';
