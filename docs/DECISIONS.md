@@ -108,3 +108,19 @@
 - `src/state/storage.js` mirrors the current production storage keys and safe localStorage wrapper.
 - `src/state/migration.js` previews and copies current state into future `holidayPlanner.*.v1` keys, but does not run automatically.
 - Future wiring must include a parity check before replacing inline storage helpers.
+
+## 2026-05-05 — Add non-wired planner data scaffold
+
+**Decision:** Add `src/data/planner-options.js` and `src/data/index.js` before extracting the larger destination, visa, stay, budget, and recommendation catalogs.
+
+**Rationale:**
+
+- Planner options are a small, clear data boundary with no DOM dependency.
+- Mirroring these options outside `index.html` reduces future extraction risk without changing the live app.
+- An explicit `src/data/index.js` export boundary lets future modules import data from one stable path.
+
+**Consequences:**
+
+- The live runtime remains inline in `index.html` for now.
+- Experience tiers, destination modes, first-reaction choices, preference markers, scenario choices, and decision signals now have a source-module scaffold.
+- Future extraction can add larger catalogs in separate files instead of expanding one oversized module.
