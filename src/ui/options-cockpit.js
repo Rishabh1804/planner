@@ -13,11 +13,11 @@ export const OPTIONS_COCKPIT_LENSES = [
 ];
 
 export const OPTIONS_WINNER_SLOTS = [
-  { id: 'bestOverall', label: 'Best overall', dimension: 'fitScore' },
-  { id: 'lowestFatigue', label: 'Lowest fatigue', dimension: 'fatigueLevel' },
-  { id: 'babyPacing', label: 'Best baby pacing', dimension: 'babyEase' },
-  { id: 'honeymoonValue', label: 'Strongest honeymoon value', dimension: 'honeymoonValue' },
-  { id: 'budgetControl', label: 'Best budget control', dimension: 'budgetPressure' }
+  { id: 'bestOverall', label: 'Best overall', dimension: 'fitScore', preference: 'high' },
+  { id: 'lowestFatigue', label: 'Lowest fatigue', dimension: 'fatigueLevel', preference: 'low' },
+  { id: 'babyPacing', label: 'Best baby pacing', dimension: 'babyEase', preference: 'high' },
+  { id: 'honeymoonValue', label: 'Strongest honeymoon value', dimension: 'honeymoonValue', preference: 'high' },
+  { id: 'budgetControl', label: 'Best budget control', dimension: 'budgetPressure', preference: 'low' }
 ];
 
 const FALLBACK_RECOMMENDATION = {
@@ -38,6 +38,21 @@ const FALLBACK_RECOMMENDATION = {
   readyImplications: [],
   decidePrompts: []
 };
+
+const LABEL_SCORE = new Map([
+  ['excellent', 100],
+  ['strong', 90],
+  ['high', 82],
+  ['good', 74],
+  ['medium', 52],
+  ['moderate', 52],
+  ['mixed', 48],
+  ['watch', 42],
+  ['low', 24],
+  ['weak', 18],
+  ['risky', 12],
+  ['pending', 0]
+]);
 
 export function normalizeOptionRecommendation(rawOption = {}) {
   const option = { ...FALLBACK_RECOMMENDATION, ...rawOption };
@@ -61,8 +76,9 @@ export function createOptionsViewModel({
   activeLens = 'balanced',
   shortlist = []
 } = {}) {
-  const normalizedRecommendations = recommendations.length
-    ? recommendations.map(normalizeOptionRecommendation)
+  const sourceRecommendations = Array.isArray(recommendations) ? recommendations : [];
+  const normalizedRecommendations = sourceRecommendations.length
+    ? sourceRecommendations.map(normalizeOptionRecommendation)
     : [normalizeOptionRecommendation(FALLBACK_RECOMMENDATION)];
 
   return {
@@ -77,30 +93,82 @@ export function createOptionsViewModel({
 }
 
 export function deriveWinnerSlots(recommendations = []) {
-  const options = recommendations.map(normalizeOptionRecommendation);
-  const firstOption = options[0] || normalizeOptionRecommendation(FALLBACK_RECOMMENDATION);
+  const options = Array.isArray(recommendations)
+    ? recommendations.map(normalizeOptionRecommendation)
+    : [normalizeOptionRecommendation(FALLBACK_RECOMMENDATION)];
+  const fallbackOption = options[0] || normalizeOptionRecommendation(FALLBACK_RECOMMENDATION);
 
-  return OPTIONS_WINNER_SLOTS.map((slot) => ({
-    ...slot,
-    optionId: firstOption.id,
-    optionTitle: firstOption.title,
-    reason: deriveWinnerReason(slot, firstOption)
-  }));
+  return OPTIONS_WINNER_SLOTS.map((slot) => {
+    const winner = findWinnerForSlot(options, slot) || fallbackOption;
+
+    return {
+      ...slot,
+      optionId: winner.id,
+      optionTitle: winner.title,
+      reason: deriveWinnerReason(slot, winner)
+    };
+  });
+}
+
+function findWinnerForSlot(options, slot) {
+  if (!options.length) return null;
+
+  return options.reduce((best, option) => {
+    const bestScore = metricScore(best, slot.dimension, slot.preference);
+    const nextScore = metricScore(option, slot.dimension, slot.preference);
+    return nextScore > bestScore ? option : best;
+  }, options[0]);
+}
+
+function metricScore(option, dimension, preference = 'high') {
+  const rawValue = dimension === 'fitScore' ? option.fitScore : option[dimension];
+  const score = scoreValue(rawValue);
+  return preference === 'low' ? 100 - score : score;
+}
+
+function scoreValue(value) {
+  if (Number.isFinite(Number(value))) return Number(value);
+
+  if (value && typeof value === 'object') {
+    if (Number.isFinite(Number(value.score))) return Number(value.score);
+    if (Number.isFinite(Number(value.value))) return Number(value.value);
+    return scoreLabel(value.label || value.tone || '');
+  }
+
+  return scoreLabel(value);
+}
+
+function scoreLabel(value) {
+  const normalized = String(value || '').trim().toLowerCase();
+  if (!normalized) return 0;
+
+  for (const [keyword, score] of LABEL_SCORE.entries()) {
+    if (normalized.includes(keyword)) return score;
+  }
+
+  return 50;
 }
 
 function deriveWinnerReason(slot, option) {
   switch (slot.id) {
     case 'lowestFatigue':
-      return option.fatigueLevel?.label || 'Lower transfer load';
+      return readableMetric(option.fatigueLevel) || 'Lower transfer load';
     case 'babyPacing':
-      return option.babyEase?.label || 'Better family pacing';
+      return readableMetric(option.babyEase) || 'Better family pacing';
     case 'honeymoonValue':
-      return option.honeymoonValue?.label || 'Stronger stay payoff';
+      return readableMetric(option.honeymoonValue) || 'Stronger stay payoff';
     case 'budgetControl':
-      return option.budgetPressure?.label || 'Clearer budget pressure';
+      return readableMetric(option.budgetPressure) || 'Clearer budget pressure';
     default:
       return option.fitLabel || 'Strongest current fit';
   }
+}
+
+function readableMetric(value) {
+  if (!value) return '';
+  if (typeof value === 'string') return value;
+  if (typeof value === 'object') return value.label || value.tone || '';
+  return String(value);
 }
 
 export function createOptionSignal(option, signalType, metadata = {}) {
