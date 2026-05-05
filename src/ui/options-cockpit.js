@@ -56,7 +56,7 @@ const FALLBACK_RECOMMENDATION = {
   decidePrompts: []
 };
 
-const LABEL_SCORE = new Map([
+const HIGH_PREFERENCE_LABEL_SCORE = new Map([
   ['excellent', 100],
   ['strong', 90],
   ['high', 82],
@@ -64,16 +64,34 @@ const LABEL_SCORE = new Map([
   ['deep', 74],
   ['rich', 74],
   ['easy', 72],
-  ['low', 24],
   ['medium', 52],
   ['moderate', 52],
   ['mixed', 48],
   ['watch', 42],
   ['limited', 34],
+  ['low', 24],
   ['weak', 18],
   ['hard', 18],
   ['risky', 12],
-  ['pending', 0]
+  ['risk', 12]
+]);
+
+const LOW_PREFERENCE_MAGNITUDE_SCORE = new Map([
+  ['excellent', 12],
+  ['strong', 16],
+  ['good', 20],
+  ['easy', 20],
+  ['low', 24],
+  ['medium', 52],
+  ['moderate', 52],
+  ['mixed', 58],
+  ['watch', 66],
+  ['limited', 72],
+  ['weak', 76],
+  ['hard', 84],
+  ['high', 84],
+  ['risky', 90],
+  ['risk', 90]
 ]);
 
 export function normalizeOptionRecommendation(rawOption = {}) {
@@ -149,27 +167,37 @@ function findWinnerForSlot(options, slot) {
 
 function metricScore(option, dimension, preference = 'high') {
   const rawValue = dimension === 'fitScore' ? option.fitScore : option[dimension];
-  const score = scoreValue(rawValue);
+  const score = scoreValue(rawValue, preference);
+
+  if (!Number.isFinite(score)) return Number.NEGATIVE_INFINITY;
+
   return preference === 'low' ? 100 - score : score;
 }
 
-function scoreValue(value) {
+function scoreValue(value, preference = 'high') {
   if (Number.isFinite(Number(value))) return Number(value);
 
   if (value && typeof value === 'object') {
     if (Number.isFinite(Number(value.score))) return Number(value.score);
     if (Number.isFinite(Number(value.value))) return Number(value.value);
-    return scoreLabel(value.label || value.tone || value.summary || value.status || '');
+    return scoreLabel(
+      [value.label, value.tone, value.summary, value.status].filter(Boolean).join(' '),
+      preference
+    );
   }
 
-  return scoreLabel(value);
+  return scoreLabel(value, preference);
 }
 
-function scoreLabel(value) {
+function scoreLabel(value, preference = 'high') {
   const normalized = String(value || '').trim().toLowerCase();
-  if (!normalized) return 0;
+  if (!normalized || normalized.includes('pending') || normalized.includes('unknown')) {
+    return null;
+  }
 
-  for (const [keyword, score] of LABEL_SCORE.entries()) {
+  const scoreMap = preference === 'low' ? LOW_PREFERENCE_MAGNITUDE_SCORE : HIGH_PREFERENCE_LABEL_SCORE;
+
+  for (const [keyword, score] of scoreMap.entries()) {
     if (normalized.includes(keyword)) return score;
   }
 
