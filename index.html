@@ -1,0 +1,2332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#f4ead7" />
+  <meta name="description" content="Holiday Planner — guided family travel planning dashboard." />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Holiday Planner" />
+  <title>Holiday Planner</title>
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="icon" href="./icon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="./icon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+<main class="app">
+<input checked="" class="tab-radio" id="tab-planner" name="tripTab" type="radio"/><input class="tab-radio" id="tab-options" name="tripTab" type="radio"/>
+
+
+
+
+<input class="tab-radio" id="tab-ready" name="tripTab" type="radio"/>
+<input class="tab-radio" id="tab-decisions" name="tripTab" type="radio"/>
+<div class="tabs-wrap">
+<nav aria-label="Dashboard tabs" class="tabs"><label class="tab-btn" for="tab-planner"><svg aria-hidden="true" class="planner-icon sketch-icon icon-domain-planner icon-size-sm" viewBox="0 0 24 24"><path d="M4 18c4-7 9-11 16-12"></path><path d="M6 18h12"></path><path d="M9 15l2 2 5-6"></path><path d="M5 21h14"></path></svg><span class="tab-label">Plan</span></label><label class="tab-btn" for="tab-options"><svg aria-hidden="true" class="planner-icon sketch-icon icon-domain-budget icon-size-sm" viewBox="0 0 24 24"><path d="M5 7c0-1.5 3.2-2.7 7-2.7s7 1.2 7 2.7-3.2 2.7-7 2.7S5 8.5 5 7z"></path><path d="M5 7v4c0 1.5 3.2 2.7 7 2.7s7-1.2 7-2.7V7"></path><path d="M5 11v4c0 1.5 3.2 2.7 7 2.7s7-1.2 7-2.7v-4"></path></svg><span class="tab-label">Options</span></label><label class="tab-btn" for="tab-decisions"><svg aria-hidden="true" class="planner-icon sketch-icon icon-domain-decision icon-size-sm" viewBox="0 0 24 24"><path d="M6 5h12v10H9l-3 3z"></path><path d="M9 9h6"></path><path d="M9 12h4"></path></svg><span class="tab-label">Decide</span></label><label class="tab-btn" for="tab-ready"><svg aria-hidden="true" class="planner-icon sketch-icon icon-domain-ready icon-size-sm" viewBox="0 0 24 24"><path d="M7 4h8l3 3v13H7z"></path><path d="M15 4v4h4"></path><path d="M9.5 13l2 2 4-5"></path><path d="M9 18h6"></path></svg><span class="tab-label">Ready</span></label></nav>
+</div>
+<section class="panel" id="planner">
+<h2 class="section-title">Plan</h2>
+<p class="section-sub">Define the trip once: dates, experience tier, destination direction, and the generated trip arc.</p>
+<div class="decision-layout">
+<article class="card card-domain-planner card-emphasis-primary card-density-comfort">
+<h3>Plan builder</h3>
+<p>Build the trip one decision at a time. Completed choices collapse into breadcrumbs and unlock the generated story.</p>
+<div class="plan-builder" id="planBuilder">
+<div class="plan-breadcrumbs" id="planBreadcrumbs" aria-label="Plan summary breadcrumbs">
+<span class="plan-crumb">Dates pending</span>
+<span class="plan-crumb">Experience pending</span>
+<span class="plan-crumb">Direction pending</span>
+</div>
+
+<section class="plan-step" data-plan-step="dates">
+<button class="plan-step-head" type="button" data-plan-edit="dates">
+<span class="step-number">1</span>
+<span class="plan-step-title"><strong>Dates</strong><span id="datesStepSummary">Choose the trip start and end dates.</span></span>
+<span class="step-state">Start here</span>
+</button>
+<div class="plan-step-body">
+<div class="date-row">
+<div class="date-field">
+<label for="tripStart">Start</label>
+<input class="date-input" id="tripStart" type="date" value="2026-08-01">
+</div>
+<div class="date-field">
+<label for="tripEnd">End</label>
+<input class="date-input" id="tripEnd" type="date" value="2026-08-17">
+</div>
+</div>
+</div>
+</section>
+
+<section class="plan-step" data-plan-step="experience">
+<button class="plan-step-head" type="button" data-plan-edit="experience">
+<span class="step-number">2</span>
+<span class="plan-step-title"><strong>Experience</strong><span id="experienceStepSummary">Pick the comfort level. Soft cap stays optional.</span></span>
+<span class="step-state">Pending</span>
+</button>
+<div class="plan-step-body">
+<div class="tier-grid" data-choice-group="experienceTier">
+<button class="tier-card action-selectable" data-choice="frugal" type="button"><strong>Frugal</strong><span>Spend carefully; accept some compromises.</span></button>
+<button class="tier-card action-selectable" data-choice="mid" type="button"><strong>Mid</strong><span>Comfortable but cost-aware.</span></button>
+<button class="tier-card action-selectable" data-choice="comfort" type="button"><strong>Comfort</strong><span>Low-friction and family-friendly without luxury waste.</span></button>
+<button class="tier-card action-selectable" data-choice="highQuality" type="button"><strong>High Quality</strong><span>Better locations, smoother flights, stronger stays.</span></button>
+<button class="tier-card action-selectable" data-choice="premium" type="button"><strong>Premium</strong><span>Minimize friction and maximize experience.</span></button>
+</div>
+<div class="cap-row" style="margin-top: var(--space-3);">
+<label class="var-label" for="budgetCap">Optional soft cap</label>
+<input class="cap-input" id="budgetCap" min="0" placeholder="Example: 800000" step="50000" type="number">
+<div class="cap-note ok" id="capNote">No hard budget asked first. The estimate is derived from the experience tier.</div>
+</div>
+</div>
+</section>
+
+<section class="plan-step" data-plan-step="direction">
+<button class="plan-step-head" type="button" data-plan-edit="direction">
+<span class="step-number">3</span>
+<span class="plan-step-title"><strong>Direction</strong><span id="directionStepSummary">Choose destination direction and planning month.</span></span>
+<span class="step-state">Pending</span>
+</button>
+<div class="plan-step-body">
+<span class="var-label">Destination direction</span>
+<div class="destination-mode-grid" data-choice-group="destinationMode" id="destinationModeGrid"></div>
+<span class="var-label" style="display:block; margin-top: var(--space-3);">Planning month</span>
+<div class="month-strip" id="planMonthStrip" aria-label="Planning month options"></div>
+</div>
+</section>
+
+<section class="plan-step plan-story-step" data-plan-step="story">
+<button class="plan-step-head" type="button" data-plan-edit="story">
+<span class="step-number">4</span>
+<span class="plan-step-title"><strong>Story</strong><span id="storyStepSummary">Generated once the first three steps are complete.</span></span>
+<span class="step-state">Locked</span>
+</button>
+<div class="plan-step-body">
+<div class="variable-summary" id="variableSummary">Planner summary will appear here.</div>
+</div>
+</section>
+</div>
+</article>
+
+
+<article class="card card-domain-plan card-density-comfort card-emphasis-secondary plan-story-unlocked" id="planJourneyCard"><h3>Generated trip story + rhythm</h3><p>Once the Planner is complete, this section turns the selected direction into a trip story, arc, and base rhythm.</p><div class="grid grid-after" id="generatedStory"></div><div class="grid grid-after" id="generatedPlan"></div><div class="note">Operating rule: one primary outing per day. If the baby is unsettled, the plan automatically shifts toward hotel time and shorter evenings.</div></article><article class="card card-domain-confidence card-density-comfort" id="plannerIntelligenceCard">
+<h3>How this planner is thinking</h3>
+<p>The recommendation logic will appear here after the Planner state loads.</p>
+</article>
+</div>
+</section><section class="panel" id="options"><h2 class="section-title">Options</h2><p class="section-sub">Explore ranked destinations, combinations, stays, flights, and the calculated budget envelope.</p><div class="decision-layout"><article class="card recommendation-module card-domain-honeymoon card-emphasis-primary card-density-comfort">
+<h3>Best options for you</h3>
+<p>Recommendation cards are generated from plannerData and ranked from the current Planner state.</p>
+<div class="recommendation-context" id="recommendationContext">
+            Based on current direction: baby-first, comfort tier, low-friction travel, and honeymoon value.
+          </div>
+<div class="scenario-output" hidden="" id="scenarioPlanB"></div>
+<div class="recommendation-stack" id="recommendationStack">
+<article class="recommendation-card card-domain-honeymoon card-density-comfort">
+<div class="recommendation-head">
+<h4>Recommendations loading from plannerData</h4>
+<span class="fit-badge medium">WIP</span>
+</div>
+<div class="recommendation-tagline">Cards are now generated from the planner engine instead of fixed HTML.</div>
+</article>
+</div>
+<div class="shortlist-strip" id="shortlistStrip">
+<span class="shortlist-chip">Shortlist will appear here</span>
+</div>
+<div class="recommendation-context" id="comparePanel" style="display:none;"></div>
+</article><article class="card planner-module card-domain-planner card-density-comfort">
+<h3>Month + destination explorer</h3>
+<p>Pick a month to compare destinations against the same brief: baby comfort, relaxed pacing, scenic value, and budget fit.</p>
+<div aria-label="Travel month options" class="month-strip" id="monthStrip"></div>
+<div class="destination-board" id="destinationBoard"></div>
+</article><article class="card card-domain-stay card-density-comfort" id="optionsStayCard"><h3>Stay strategy</h3><p>Generated from the comfort and premium stays database for the current top destination.</p><div class="grid grid-after" id="generatedStays"></div></article><article class="card card-domain-budget card-density-comfort card-emphasis-primary" id="optionsBudgetCard"><h3>Budget + flight breakdown</h3><p>Calculated envelope using destination, duration, tier, flight carrier seeds, stay database, local spend, and buffer.</p><div class="grid">
+<article class="card span-8 card-domain-budget card-emphasis-primary card-density-comfort">
+<h3 id="budgetTitle">Derived budget envelope</h3>
+<p id="budgetIntro">Budget is calculated from selected destination, experience tier, trip length, flight seed estimate, stay database estimate, local spend, and buffer.</p>
+<div class="budget-summary">
+<span>Dynamic estimate</span>
+<strong id="budgetTotal">₹7.0–8.0L</strong>
+<p id="budgetSummary">Budget summary will appear here after Planner state is calculated.</p>
+</div>
+<div class="bar-wrap">
+<div class="bar-item">
+<strong>Flights <span id="flightBudget">₹3–3.5L</span></strong>
+<div class="bar"><div class="bar-fill-dynamic" id="flightBar"></div></div>
+</div>
+<div class="bar-item">
+<strong>Hotels <span id="hotelBudget">₹3–3.8L</span></strong>
+<div class="bar"><div class="bar-fill-dynamic" id="hotelBar"></div></div>
+</div>
+<div class="bar-item">
+<strong>Food, transfers, experiences <span id="experienceBudget">₹1–1.5L</span></strong>
+<div class="bar"><div class="bar-fill-dynamic" id="experienceBar"></div></div>
+</div>
+</div>
+<div class="budget-reasons" id="budgetReasons"></div>
+</article>
+<article class="card span-4 budget-breakdown-card card-domain-budget card-density-comfort">
+<h3>Calculated breakdown</h3>
+<p>Shows the moving parts behind the envelope. Flight rows come from the carrier database; hotel/stay rows come from the comfort and premium stays database.</p>
+<div class="breakdown-list" id="budgetBreakdownList"></div>
+<div class="flight-data-card" id="flightDataNote">Flight estimate database is ready for carrier/routing inputs.</div>
+<div class="flight-option-list" id="flightOptionList"></div>
+</article>
+</div></article></div></section>
+
+
+
+
+<section class="panel" id="ready">
+<h2 class="section-title">Generated booking readiness</h2>
+<p class="section-sub">A dynamic checklist based on the current top destination, route fatigue, visa path, and budget envelope.</p>
+<div class="grid" id="generatedReady"></div>
+</section>
+<section class="panel" id="decisions">
+<h2 class="section-title">Decide together</h2>
+<p class="section-sub">Capture human preferences, worries, upgrades, skips, and Plan B scenarios. These signals adjust recommendations and budget pressure.</p>
+<div class="decision-layout">
+<article class="card decision-hero card-domain-decision card-emphasis-primary card-density-comfort">
+<h3>First reaction</h3>
+<p>Start with the overall feeling before getting into details.</p>
+<div class="feeling-grid" data-choice-group="overallFeeling" id="overallFeelingGrid"></div>
+</article>
+<article class="card card-domain-decision card-density-comfort">
+<h3>Preference markers</h3>
+<p>Tap any that feel important. These are saved with the notes.</p>
+<div class="preference-grid" data-choice-group="preferenceMarkers" data-multi="true" id="preferenceMarkersGrid"></div>
+</article>
+<article class="card card-domain-planner card-density-comfort">
+<h3>Scenario exploration</h3>
+<p>Turn family doubts into structured Plan B inputs. These influence recommendation ranking and backup planning.</p>
+<div class="scenario-grid">
+<div class="scenario-group">
+<span class="scenario-label">Alternate months</span>
+<div class="scenario-chip-grid" data-choice-group="alternateMonths" data-multi="true" id="decisionAlternateMonthsGrid"></div>
+</div>
+<div class="scenario-group">
+<span class="scenario-label">Backup destinations</span>
+<div class="scenario-chip-grid" data-choice-group="backupDestinations" data-multi="true" id="decisionBackupDestinationsGrid"></div>
+</div>
+<div class="scenario-group">
+<span class="scenario-label">Fallback strategy</span>
+<div class="scenario-chip-grid" data-choice-group="fallbackStrategy" id="decisionFallbackStrategyGrid"></div>
+</div>
+</div>
+<div class="scenario-output" id="decisionScenarioSummary">Scenario summary will appear here.</div>
+</article>
+<article class="card card-domain-decision card-density-comfort" id="decisionSignalsCard">
+<h3>Decision signals</h3>
+<p>Tap what matters. These signals are engine-readable and will adjust recommendations, budget pressure, and Plan B logic.</p>
+<div class="decision-signal-grid">
+<div class="signal-group card-domain-baby">
+<span class="signal-label">Non-negotiables</span>
+<span class="field-help">Highest priority comforts to protect.</span>
+<div class="scenario-chip-grid" data-choice-group="nonNegotiables" data-multi="true" id="nonNegotiablesGrid"></div>
+</div>
+<div class="signal-group card-domain-risk">
+<span class="signal-label">Worries</span>
+<span class="field-help">Risk signals that should lower fit or trigger safer options.</span>
+<div class="scenario-chip-grid" data-choice-group="worries" data-multi="true" id="worriesGrid"></div>
+</div>
+<div class="signal-group card-domain-budget">
+<span class="signal-label">Worth upgrading</span>
+<span class="field-help">Places where spending extra should be considered useful, not wasteful.</span>
+<div class="scenario-chip-grid" data-choice-group="worthUpgrading" data-multi="true" id="worthUpgradingGrid"></div>
+</div>
+<div class="signal-group card-domain-risk">
+<span class="signal-label">Skip</span>
+<span class="field-help">Experiences or patterns to avoid for a calmer trip.</span>
+<div class="scenario-chip-grid" data-choice-group="skipSignals" data-multi="true" id="skipSignalsGrid"></div>
+</div>
+</div>
+<div class="signal-output" id="decisionSignalSummary">Decision signals will appear here.</div>
+<div class="decision-fields compact-note-field">
+<div class="field-card">
+<label class="field-label" for="extraNotes">Anything else?</label>
+<span class="field-help">Optional free-text note only for details that chips cannot capture.</span>
+<textarea class="notes-area small" id="extraNotes" placeholder="Example: avoid late returns to hotel; prefer rooms near lift; keep one laundry-friendly stay"></textarea>
+</div>
+</div>
+<div class="decision-actions">
+<button class="btn btn-utility action-btn primary" id="copyNotes" type="button">Copy summary</button>
+<button class="btn btn-utility action-btn secondary" id="exportNotes" type="button">Export notes</button>
+<input accept="application/json,.json" class="hidden-input" hidden="" id="importNotes" type="file">
+<label class="btn btn-utility action-btn secondary import-label" for="importNotes">Import notes</label>
+<button class="btn btn-danger action-btn danger" id="clearNotes" type="button">Clear</button>
+<span class="save-state" id="saveState">Saved locally</span>
+</input></div>
+</article>
+<article class="card card-domain-risk card-density-comfort" id="generatedDecisionCheckpoint">
+<h3>Decision checkpoint</h3>
+<p>Checkpoint will be generated from the current Planner state.</p>
+</article>
+</div>
+</section>
+</main>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const memoryStorage = {};
+      const storage = {
+        getItem(key) {
+          try { return window['localStorage'].getItem(key); }
+          catch (error) { return Object.prototype.hasOwnProperty.call(memoryStorage, key) ? memoryStorage[key] : null; }
+        },
+        setItem(key, value) {
+          try { window['localStorage'].setItem(key, value); }
+          catch (error) { memoryStorage[key] = String(value); }
+        },
+        removeItem(key) {
+          try { window['localStorage'].removeItem(key); }
+          catch (error) { delete memoryStorage[key]; }
+        }
+      };
+
+      const plannerStorage = {
+        namespace: 'augustFamilyHoneymoon',
+        schemaVersion: 431,
+        keys: {
+          notes: 'augustFamilyHoneymoon.discussionNotes.v431',
+          choices: 'augustFamilyHoneymoon.choiceState.v431',
+          variables: 'augustFamilyHoneymoon.tripVariables.v431',
+          budgetCap: 'augustFamilyHoneymoon.budgetCap.v431',
+          shortlist: 'augustFamilyHoneymoon.shortlist.v431'
+        },
+        legacyKeys: {
+          notes: ['augustFamilyHoneymoon.discussionNotes.v4'],
+          choices: ['augustFamilyHoneymoon.choiceState.v2'],
+          variables: ['augustFamilyHoneymoon.tripVariables.v2'],
+          budgetCap: ['augustFamilyHoneymoon.budgetCap.v1'],
+          shortlist: ['augustFamilyHoneymoon.shortlist.v1']
+        }
+      };
+
+      const notesKey = plannerStorage.keys.notes;
+      const choiceKey = plannerStorage.keys.choices;
+      const variableKey = plannerStorage.keys.variables;
+
+      const noteFields = ['extraNotes'];
+
+      const plannerData = {
+        origins: {
+          CCU: { label: 'Kolkata', fatigueOffset: 0, note: 'Preferred international origin for lower fatigue.' },
+          IXR: { label: 'Ranchi', fatigueOffset: 2, note: 'Useful fallback but usually adds routing effort.' }
+        },
+        scoringRules: {
+          weights: {
+            babyComfort: 0.30,
+            monthFit: 0.20,
+            budgetFit: 0.15,
+            travelFatigue: 0.15,
+            honeymoonValue: 0.10,
+            visaEase: 0.10
+          }
+        },
+        uiOptions: {
+          destinationModes: [
+            { label: 'UAE + Bali', value: 'UAE + Bali', domain: 'route' },
+            { label: 'UAE + Thailand', value: 'UAE + Thailand', domain: 'route' },
+            { label: 'UAE + Sri Lanka', value: 'UAE + Sri Lanka', domain: 'baby' },
+            { label: 'Thailand + Vietnam', value: 'Thailand + Vietnam', domain: 'budget' },
+            { label: 'Italy + UAE', value: 'Italy + UAE', domain: 'admin' },
+            { label: 'UAE only', value: 'UAE only', domain: 'baby' },
+            { label: 'Bali-heavy', value: 'Bali-heavy', domain: 'honeymoon' },
+            { label: 'Europe option', value: 'Europe option', domain: 'admin' },
+            { label: 'Sri Lanka option', value: 'Sri Lanka option', domain: 'stay' },
+            { label: 'Vietnam option', value: 'Vietnam option', domain: 'budget' }
+          ],
+          overallFeeling: [
+            { label: 'Feels exciting', value: 'Excited', domain: 'honeymoon' },
+            { label: 'Feels too packed', value: 'Too packed', domain: 'risk' },
+            { label: 'Need more honeymoon time', value: 'Need more honeymoon time', legacyValues: ['Need more Bali'], domain: 'honeymoon' },
+            { label: 'Need more city / shopping time', value: 'Need more city / shopping time', legacyValues: ['Need more Dubai'], domain: 'budget' }
+          ],
+          preferenceMarkers: [
+            { label: 'Prioritise villa / resort', value: 'Prioritise villa', domain: 'honeymoon' },
+            { label: 'More shopping', value: 'More shopping', domain: 'budget' },
+            { label: 'Less hotel switching', value: 'Less hotel switching', domain: 'risk' },
+            { label: 'Better photos', value: 'Better photos', domain: 'honeymoon' },
+            { label: 'Slow mornings', value: 'Slow mornings', domain: 'baby' },
+            { label: 'Safer baby pacing', value: 'Safer baby pacing', domain: 'baby' }
+          ],
+          alternateMonths: [
+            { label: 'Sep', value: 'Sep', domain: 'planner' },
+            { label: 'Oct', value: 'Oct', domain: 'planner' },
+            { label: 'Nov', value: 'Nov', domain: 'planner' },
+            { label: 'Dec', value: 'Dec', domain: 'planner' }
+          ],
+          backupDestinations: [
+            { label: 'UAE only', value: 'uae', domain: 'baby' },
+            { label: 'Sri Lanka', value: 'sri_lanka', domain: 'stay' },
+            { label: 'Thailand', value: 'thailand', domain: 'stay' },
+            { label: 'Vietnam', value: 'vietnam', domain: 'budget' },
+            { label: 'UAE + Sri Lanka', value: 'uae_sri_lanka', domain: 'baby' },
+            { label: 'UAE + Thailand', value: 'uae_thailand', domain: 'route' }
+          ],
+          fallbackStrategy: [
+            { label: 'Single country if baby fatigue is high', value: 'single_country_if_fatigue_high', domain: 'baby' },
+            { label: 'Closer resort over long-haul', value: 'closer_resort_over_longhaul', domain: 'route' },
+            { label: 'Reduce transfers first', value: 'reduce_transfers_first', domain: 'risk' },
+            { label: 'Protect premium stay quality', value: 'protect_premium_stay_quality', domain: 'honeymoon' }
+          ],
+          nonNegotiables: [
+            { label: 'Relaxed mornings', value: 'relaxed_mornings', domain: 'baby' },
+            { label: 'Fewer bases', value: 'fewer_hotel_changes', domain: 'risk' },
+            { label: 'Strong villa / resort', value: 'strong_resort', domain: 'honeymoon' },
+            { label: 'Short transfers', value: 'short_transfers', domain: 'route' },
+            { label: 'Easy food access', value: 'easy_food_access', domain: 'stay' },
+            { label: 'Baby sleep', value: 'baby_sleep_priority', domain: 'baby' }
+          ],
+          worries: [
+            { label: 'Long flights', value: 'long_flights', domain: 'route' },
+            { label: 'Too hot', value: 'too_hot', domain: 'risk' },
+            { label: 'Visa delays', value: 'visa_delays', domain: 'admin' },
+            { label: 'Sleep disruption', value: 'baby_sleep_disruption', domain: 'baby' },
+            { label: 'Too many bases', value: 'too_many_bases', domain: 'risk' },
+            { label: 'Budget drift', value: 'budget_drift', domain: 'budget' }
+          ],
+          worthUpgrading: [
+            { label: 'Direct flights', value: 'direct_flights', domain: 'route' },
+            { label: 'Stay location', value: 'better_location', domain: 'stay' },
+            { label: 'Premium resort', value: 'premium_resort', domain: 'honeymoon' },
+            { label: 'Private transfers', value: 'private_transfers', domain: 'route' },
+            { label: 'Room view', value: 'room_view', domain: 'honeymoon' },
+            { label: 'Flexible booking', value: 'flexible_cancellation', domain: 'admin' }
+          ],
+          skipSignals: [
+            { label: 'Packed days', value: 'packed_sightseeing', domain: 'risk' },
+            { label: 'Long day tours', value: 'long_day_tours', domain: 'risk' },
+            { label: 'Desert safari', value: 'desert_safari', domain: 'risk' },
+            { label: 'Late nights', value: 'late_nights', domain: 'baby' },
+            { label: 'Frequent taxis', value: 'frequent_taxis', domain: 'route' }
+          ]
+        },
+        visaCatalog: {
+          assumptions: {
+            travelers: 'Indian passport holders: 2 adults + 1 infant',
+            estimateBasis: 'Planning seed database for visa/document friction. Validate current official rules before booking.',
+            note: 'This database feeds Ready tab, recommendation confidence, and booking lock conditions.'
+          },
+          destinations: {
+            uae_bali: {
+              label: 'UAE + Indonesia/Bali', visaType: 'UAE visa + Indonesia visa/VOA path', adminComplexity: 72, confidence: 68, risk: 'Medium-high', processingWindow: 'UAE: before travel; Indonesia: validate VOA/e-VOA rules before booking',
+              documents: ['Infant passport', 'Birth certificate / parent proof', 'UAE visa documents', 'Indonesia entry/VOA eligibility', 'Return/onward tickets', 'Hotel confirmations', 'Travel insurance'],
+              bookingRule: 'Do not lock non-refundable Bali sectors until infant passport and both entry paths are clear.',
+              babyNote: 'Multi-country paperwork increases admin load; keep copies of infant documents in phone and print.'
+            },
+            uae_thailand: {
+              label: 'UAE + Thailand', visaType: 'UAE visa + Thailand entry path', adminComplexity: 76, confidence: 68, risk: 'Medium', processingWindow: 'Validate UAE visa plus current Thailand rules before booking',
+              documents: ['Infant passport', 'Birth certificate / parent proof', 'UAE visa documents', 'Thailand entry eligibility', 'Return/onward tickets', 'Hotel confirmations', 'Travel insurance'],
+              bookingRule: 'Good combo candidate once infant passport and Thailand entry rules are confirmed.',
+              babyNote: 'Two easy-to-moderate admin paths; keep the Thailand leg resort-led to avoid complexity.'
+            },
+            uae_sri_lanka: {
+              label: 'UAE + Sri Lanka', visaType: 'UAE visa + Sri Lanka ETA/e-visa path', adminComplexity: 78, confidence: 70, risk: 'Medium', processingWindow: 'Validate UAE visa plus Sri Lanka ETA/e-visa rules before booking',
+              documents: ['Infant passport', 'Birth certificate / parent proof', 'UAE visa documents', 'Sri Lanka ETA/e-visa approval', 'Return/onward tickets', 'Hotel confirmations', 'Travel insurance'],
+              bookingRule: 'Can be locked earlier than long-haul combos if infant documents are ready.',
+              babyNote: 'Lower travel fatigue than Bali-style combinations; best when Sri Lanka is kept to one or two bases.'
+            },
+            thailand_vietnam: {
+              label: 'Thailand + Vietnam', visaType: 'Thailand entry path + Vietnam e-visa', adminComplexity: 70, confidence: 64, risk: 'Medium-high', processingWindow: 'Validate Vietnam entry/exit points and Thailand rules together',
+              documents: ['Infant passport', 'Vietnam e-visa approval', 'Thailand entry eligibility', 'Entry/exit point match', 'Return/onward tickets', 'Hotel confirmations', 'Travel insurance'],
+              bookingRule: 'Only lock if route order and Vietnam e-visa entry/exit points are clear.',
+              babyNote: 'Works only with limited bases; otherwise the route becomes too transfer-heavy.'
+            },
+            uae_vietnam: {
+              label: 'UAE + Vietnam', visaType: 'UAE visa + Vietnam e-visa', adminComplexity: 68, confidence: 62, risk: 'Medium-high', processingWindow: 'Validate Vietnam e-visa entry/exit points before any multi-city booking',
+              documents: ['Infant passport', 'UAE visa documents', 'Vietnam e-visa approval', 'Entry/exit point match', 'Return/onward tickets', 'Hotel confirmations', 'Travel insurance'],
+              bookingRule: 'Conditional combo: keep Vietnam simple and avoid complex internal transfers.',
+              babyNote: 'Admin is manageable, but routing can become awkward with an infant.'
+            },
+            italy_uae: {
+              label: 'Italy + UAE', visaType: 'Schengen visa + UAE visa/stopover path', adminComplexity: 52, confidence: 58, risk: 'High', processingWindow: 'Start Schengen early; use UAE only as a recovery/stopover if route supports it',
+              documents: ['Infant passport', 'Birth certificate / parent proof', 'Schengen application set', 'UAE visa/entry path', 'Travel insurance', 'Flights / itinerary', 'Hotel bookings', 'Financial documents'],
+              bookingRule: 'Do not lock rigid bookings until Schengen appointment/document readiness is strong.',
+              babyNote: 'High paperwork and long flights; UAE must reduce fatigue, not add a second holiday load.'
+            },
+            uae: {
+              label: 'UAE', visaType: 'UAE tourist/family visit visa path', adminComplexity: 78, confidence: 76, risk: 'Medium', processingWindow: 'Validate before flight booking; keep buffer for infant documentation',
+              documents: ['Infant passport', 'Birth certificate / parent proof', 'UAE visa documents', 'Return tickets', 'Stay address / family host details', 'Travel insurance'],
+              bookingRule: 'Lock flights after infant passport and UAE visa route are confirmed.',
+              babyNote: 'Lowest admin spread because only one international visa path is involved.'
+            },
+            sri_lanka: {
+              label: 'Sri Lanka', visaType: 'ETA / e-visa style path', adminComplexity: 86, confidence: 74, risk: 'Medium', processingWindow: 'Usually simpler, but validate current ETA/e-visa rules before booking',
+              documents: ['Infant passport', 'Parent proof / birth certificate', 'ETA/e-visa approval', 'Return tickets', 'Hotel confirmations', 'Travel insurance'],
+              bookingRule: 'Good early-lock candidate once infant passport is ready and ETA path is confirmed.',
+              babyNote: 'Closer destination reduces route stress; document flow is comparatively simpler.'
+            },
+            vietnam: {
+              label: 'Vietnam', visaType: 'Vietnam e-visa path', adminComplexity: 74, confidence: 70, risk: 'Medium', processingWindow: 'Validate e-visa timelines and entry points before locking flights',
+              documents: ['Infant passport', 'Vietnam e-visa approval', 'Entry/exit point match', 'Return/onward tickets', 'Hotel confirmations', 'Travel insurance'],
+              bookingRule: 'Avoid complex multi-city entry/exit until e-visa details are checked.',
+              babyNote: 'Visa is manageable, but itinerary complexity can create paperwork mistakes.'
+            },
+            thailand: {
+              label: 'Thailand', visaType: 'Easy visa / visa-exemption style path depending on current rules', adminComplexity: 82, confidence: 70, risk: 'Medium', processingWindow: 'Validate current Indian passport rules and infant requirements before booking',
+              documents: ['Infant passport', 'Current Thailand entry eligibility', 'Return tickets', 'Hotel confirmations', 'Travel insurance', 'Proof of funds if required'],
+              bookingRule: 'Can be booked earlier than Europe if current entry rules are favourable.',
+              babyNote: 'Good admin comfort if the route and stay are kept simple.'
+            },
+            italy: {
+              label: 'Italy / Schengen', visaType: 'Schengen visa', adminComplexity: 48, confidence: 62, risk: 'High', processingWindow: 'Start early; appointment availability and infant documentation can be the bottleneck',
+              documents: ['Infant passport', 'Birth certificate / parent proof', 'Schengen application set', 'Appointment', 'Travel insurance meeting Schengen norms', 'Flights / itinerary', 'Hotel bookings', 'Financial documents'],
+              bookingRule: 'Do not make rigid bookings until visa appointment and document readiness are strong.',
+              babyNote: 'High paperwork + long flights means Europe needs a stronger reason and more buffer.'
+            }
+          }
+        },
+
+        flightCatalog: {
+          assumptions: {
+            travelers: '2 adults + 1 infant',
+            origin: 'CCU primary, IXR fallback',
+            pricingUnit: 'INR lakh for return flights for the family',
+            estimateBasis: 'Planning seed ranges, not live fares',
+            note: 'Carrier-level seed database. Replace costL and confidence fields with live quotes later; the budget engine is already wired to consume this structure.'
+          },
+          carriers: {
+            etihad: { name: 'Etihad', type: 'fullService', comfortScore: 91, infantFit: 92, baggageClarity: 86, role: 'UAE anchor / Abu Dhabi direct-fit carrier' },
+            emirates: { name: 'Emirates', type: 'fullService', comfortScore: 92, infantFit: 90, baggageClarity: 88, role: 'Dubai anchor / premium UAE routing' },
+            qatar: { name: 'Qatar Airways', type: 'fullService', comfortScore: 91, infantFit: 88, baggageClarity: 84, role: 'Premium one-stop long-haul connector' },
+            singaporeAirlines: { name: 'Singapore Airlines', type: 'fullService', comfortScore: 93, infantFit: 90, baggageClarity: 88, role: 'SE Asia premium connector' },
+            thai: { name: 'Thai Airways', type: 'fullService', comfortScore: 86, infantFit: 84, baggageClarity: 80, role: 'Thailand/SE Asia connector' },
+            srilankan: { name: 'SriLankan Airlines', type: 'fullService', comfortScore: 82, infantFit: 82, baggageClarity: 78, role: 'Sri Lanka direct/one-stop candidate' },
+            vietnamAirlines: { name: 'Vietnam Airlines', type: 'fullService', comfortScore: 82, infantFit: 80, baggageClarity: 76, role: 'Vietnam connector candidate' },
+            airIndia: { name: 'Air India', type: 'fullService', comfortScore: 78, infantFit: 78, baggageClarity: 74, role: 'India hub fallback' },
+            indigo: { name: 'IndiGo', type: 'lowCost', comfortScore: 68, infantFit: 72, baggageClarity: 72, role: 'Regional value fallback' },
+            airAsia: { name: 'AirAsia / LCC mix', type: 'lowCost', comfortScore: 64, infantFit: 66, baggageClarity: 62, role: 'Lowest-fare SE Asia fallback; baggage risk higher' }
+          },
+          routes: {
+            uae_bali: [
+              { id: 'uae_bali_etihad_singapore', label: 'Comfort split via Abu Dhabi + Singapore', carrierIds: ['etihad', 'singaporeAirlines'], routeShape: 'CCU → AUH → DPS / SIN → CCU', costL: [3.05, 3.85], durationHours: [9, 15], layovers: [1, 2], comfortScore: 88, estimateConfidence: 72, overUnderRisk: 'Medium', bestFor: 'Best balance for baby comfort and honeymoon payoff.', risk: 'Multi-sector fare changes and Bali connection quality can move the total.' },
+              { id: 'uae_bali_emirates', label: 'Premium UAE-led routing', carrierIds: ['emirates'], routeShape: 'CCU → DXB → DPS → DXB/CCU', costL: [3.25, 4.15], durationHours: [9, 16], layovers: [1, 2], comfortScore: 90, estimateConfidence: 70, overUnderRisk: 'Medium-high', bestFor: 'Best if Dubai is locked and premium timing matters.', risk: 'Can over-estimate or under-estimate depending on Dubai stopover pricing.' },
+              { id: 'uae_bali_value_mix', label: 'Value mix with regional connector', carrierIds: ['indigo', 'airAsia'], routeShape: 'CCU → UAE/SE Asia hub → DPS → CCU', costL: [2.55, 3.30], durationHours: [11, 18], layovers: [2, 3], comfortScore: 64, estimateConfidence: 58, overUnderRisk: 'High', bestFor: 'Only if budget pressure is high.', risk: 'More layovers, baggage add-ons, and separate-sector risk.' }
+            ],
+            uae: [
+              { id: 'uae_etihad_direct', label: 'Etihad Abu Dhabi anchor', carrierIds: ['etihad'], routeShape: 'CCU → AUH → CCU', costL: [1.55, 2.20], durationHours: [5, 7], layovers: [0, 1], comfortScore: 90, estimateConfidence: 82, overUnderRisk: 'Low-medium', bestFor: 'Lowest-friction UAE plan with baby.', risk: 'Main swing is date/time availability.' },
+              { id: 'uae_emirates_dubai', label: 'Emirates Dubai anchor', carrierIds: ['emirates'], routeShape: 'CCU → DXB → CCU', costL: [1.70, 2.40], durationHours: [5, 8], layovers: [0, 1], comfortScore: 91, estimateConfidence: 80, overUnderRisk: 'Low-medium', bestFor: 'Best if Dubai stay is central.', risk: 'Premium timings can push upper range.' },
+              { id: 'uae_indigo_value', label: 'IndiGo value UAE', carrierIds: ['indigo'], routeShape: 'CCU → AUH/DXB → CCU', costL: [1.25, 1.85], durationHours: [5, 8], layovers: [0, 1], comfortScore: 67, estimateConfidence: 76, overUnderRisk: 'Medium', bestFor: 'Budget control if comfort compromise is acceptable.', risk: 'Baggage and seat selection can erase savings.' }
+            ],
+            sri_lanka: [
+              { id: 'srilanka_srilankan', label: 'SriLankan simple routing', carrierIds: ['srilankan'], routeShape: 'CCU → CMB → CCU', costL: [1.25, 1.85], durationHours: [5, 8], layovers: [0, 1], comfortScore: 82, estimateConfidence: 76, overUnderRisk: 'Medium', bestFor: 'Best simple scenic-reset option.', risk: 'Regional season and baggage assumptions still need quote validation.' },
+              { id: 'srilanka_indigo', label: 'IndiGo value Sri Lanka', carrierIds: ['indigo'], routeShape: 'CCU → CMB → CCU', costL: [1.05, 1.55], durationHours: [5, 9], layovers: [0, 1], comfortScore: 66, estimateConfidence: 70, overUnderRisk: 'Medium', bestFor: 'Best for controlled budget.', risk: 'Add-ons and less comfortable timings can reduce value.' }
+            ],
+            vietnam: [
+              { id: 'vietnam_singapore', label: 'Singapore premium connector', carrierIds: ['singaporeAirlines'], routeShape: 'CCU → SIN → SGN/HAN/DAD → CCU', costL: [2.15, 3.05], durationHours: [8, 13], layovers: [1, 2], comfortScore: 90, estimateConfidence: 68, overUnderRisk: 'Medium-high', bestFor: 'Best comfort route for Vietnam with baby.', risk: 'Final Vietnam city selection changes the estimate.' },
+              { id: 'vietnam_thai', label: 'Thai regional connector', carrierIds: ['thai'], routeShape: 'CCU → BKK → Vietnam → CCU', costL: [1.85, 2.65], durationHours: [8, 13], layovers: [1, 2], comfortScore: 82, estimateConfidence: 66, overUnderRisk: 'Medium-high', bestFor: 'Good middle path if timings line up.', risk: 'Connection quality and city pair drive fatigue.' },
+              { id: 'vietnam_lcc', label: 'LCC mixed Vietnam routing', carrierIds: ['indigo', 'airAsia'], routeShape: 'CCU → BKK/KUL → Vietnam → CCU', costL: [1.45, 2.20], durationHours: [10, 16], layovers: [2, 3], comfortScore: 60, estimateConfidence: 52, overUnderRisk: 'High', bestFor: 'Only for frugal/mid tier.', risk: 'Separate bookings, baggage, and infant comfort risk are high.' }
+            ],
+            thailand: [
+              { id: 'thailand_thai', label: 'Thai Airways simple route', carrierIds: ['thai'], routeShape: 'CCU → BKK/HKT → CCU', costL: [1.65, 2.35], durationHours: [6, 10], layovers: [1, 2], comfortScore: 84, estimateConfidence: 72, overUnderRisk: 'Medium', bestFor: 'Best comfort route for Thailand resorts.', risk: 'Beach add-on city can change total.' },
+              { id: 'thailand_indigo', label: 'IndiGo value Thailand', carrierIds: ['indigo'], routeShape: 'CCU → BKK/HKT → CCU', costL: [1.25, 1.95], durationHours: [6, 11], layovers: [1, 2], comfortScore: 66, estimateConfidence: 70, overUnderRisk: 'Medium', bestFor: 'Best if budget is the constraint.', risk: 'Ancillary fees and timings need validation.' }
+            ],
+            italy: [
+              { id: 'italy_emirates', label: 'Emirates Europe connector', carrierIds: ['emirates'], routeShape: 'CCU → DXB → Italy → CCU', costL: [3.00, 4.45], durationHours: [12, 18], layovers: [1, 2], comfortScore: 88, estimateConfidence: 62, overUnderRisk: 'High', bestFor: 'Best premium one-stop Europe option.', risk: 'Schengen-season fares and open-jaw routing can swing strongly.' },
+              { id: 'italy_etihad', label: 'Etihad Europe connector', carrierIds: ['etihad'], routeShape: 'CCU → AUH → Italy → CCU', costL: [2.85, 4.25], durationHours: [12, 18], layovers: [1, 2], comfortScore: 86, estimateConfidence: 62, overUnderRisk: 'High', bestFor: 'Good if Abu Dhabi support is part of the arc.', risk: 'Fare class, baggage, and infant rules need live quote.' },
+              { id: 'italy_airindia', label: 'Air India hub fallback', carrierIds: ['airIndia'], routeShape: 'CCU → DEL/BOM → Europe/Italy → CCU', costL: [2.55, 3.80], durationHours: [13, 20], layovers: [1, 2], comfortScore: 74, estimateConfidence: 56, overUnderRisk: 'High', bestFor: 'Cost control with comfort trade-off.', risk: 'Domestic connection and timing fatigue can be material.' }
+            ]
+          }
+        },
+        stayCatalog: {
+          assumptions: {
+            travelers: '2 adults + 1 infant',
+            pricingUnit: 'INR lakh for full stay component, excluding flights',
+            estimateBasis: 'Seed planning ranges for comfort and premium stays; validate with live hotel quotes before booking',
+            note: 'Country-level stay database v1. Each option carries nightly range, suggested nights, baby comfort, honeymoon value, location convenience, and confidence.'
+          },
+          countries: {
+            uae: {
+              label: 'UAE',
+              options: [
+                { id: 'uae_comfort_city_resort', tier: 'comfort', label: 'Dubai/Abu Dhabi comfort hotel', locations: ['Downtown Dubai', 'Dubai Marina', 'Abu Dhabi Corniche'], nightlyL: [0.28, 0.48], suggestedNights: [5, 8], babyComfort: 91, honeymoonValue: 72, locationConvenience: 92, confidence: 82, estimateRisk: 'Low-medium', bestFor: 'Low-friction city comfort, mall/food access, elevators, in-room dining.', watchOut: 'Peak season and view rooms move pricing upward.' },
+                { id: 'uae_premium_resort', tier: 'premium', label: 'Premium UAE resort / view stay', locations: ['Palm/JBR', 'Saadiyat', 'Downtown view'], nightlyL: [0.58, 1.05], suggestedNights: [4, 7], babyComfort: 90, honeymoonValue: 84, locationConvenience: 86, confidence: 78, estimateRisk: 'Medium', bestFor: 'When the hotel itself becomes the memory: beach, view, service, room size.', watchOut: 'Premium taxes, resort fees, and room category can widen the range.' }
+              ]
+            },
+            indonesia: {
+              label: 'Indonesia / Bali',
+              options: [
+                { id: 'bali_comfort_resort', tier: 'comfort', label: 'Bali comfort resort split', locations: ['Ubud', 'Seminyak/Sanur/Nusa Dua'], nightlyL: [0.22, 0.42], suggestedNights: [5, 8], babyComfort: 82, honeymoonValue: 88, locationConvenience: 78, confidence: 74, estimateRisk: 'Medium', bestFor: 'Strong honeymoon value without forcing full luxury villa pricing.', watchOut: 'Remote villas and long transfers reduce baby comfort.' },
+                { id: 'bali_premium_villa', tier: 'premium', label: 'Premium Bali villa + resort', locations: ['Ubud pool villa', 'Nusa Dua/Seminyak resort'], nightlyL: [0.52, 1.10], suggestedNights: [5, 8], babyComfort: 80, honeymoonValue: 96, locationConvenience: 74, confidence: 70, estimateRisk: 'Medium-high', bestFor: 'Private pool, villa memory, slower honeymoon rhythm.', watchOut: 'Beautiful-but-remote properties can add transfer fatigue with baby.' }
+              ]
+            },
+            sri_lanka: {
+              label: 'Sri Lanka',
+              options: [
+                { id: 'srilanka_comfort_resort', tier: 'comfort', label: 'Sri Lanka comfort resort route', locations: ['Bentota', 'Galle coast', 'Negombo arrival'], nightlyL: [0.18, 0.34], suggestedNights: [5, 8], babyComfort: 86, honeymoonValue: 80, locationConvenience: 80, confidence: 78, estimateRisk: 'Medium', bestFor: 'Closer scenic resort reset with controlled transfers.', watchOut: 'Region choice must match month and monsoon side.' },
+                { id: 'srilanka_premium_boutique', tier: 'premium', label: 'Premium boutique coast stay', locations: ['Galle coast', 'South/west coast by season'], nightlyL: [0.38, 0.82], suggestedNights: [5, 8], babyComfort: 84, honeymoonValue: 88, locationConvenience: 76, confidence: 74, estimateRisk: 'Medium', bestFor: 'Boutique character, sea views, private transfers, relaxed resort days.', watchOut: 'Transfers between coast and hill country can get tiring.' }
+              ]
+            },
+            vietnam: {
+              label: 'Vietnam',
+              options: [
+                { id: 'vietnam_comfort_two_base', tier: 'comfort', label: 'Vietnam comfort two-base plan', locations: ['Da Nang/Hoi An', 'Hanoi or Ho Chi Minh landing'], nightlyL: [0.18, 0.36], suggestedNights: [6, 9], babyComfort: 78, honeymoonValue: 80, locationConvenience: 76, confidence: 72, estimateRisk: 'Medium', bestFor: 'Value-friendly premium feel if bases are limited.', watchOut: 'Too many regions quickly turns into a tiring trip.' },
+                { id: 'vietnam_premium_resort', tier: 'premium', label: 'Vietnam premium resort anchor', locations: ['Da Nang beachfront', 'Phu Quoc resort', 'Hoi An boutique'], nightlyL: [0.40, 0.86], suggestedNights: [5, 8], babyComfort: 80, honeymoonValue: 86, locationConvenience: 74, confidence: 70, estimateRisk: 'Medium-high', bestFor: 'Beachfront or boutique luxury at better value than Europe.', watchOut: 'Domestic add-on flights can reduce comfort confidence.' }
+              ]
+            },
+            thailand: {
+              label: 'Thailand',
+              options: [
+                { id: 'thailand_comfort_resort', tier: 'comfort', label: 'Thailand comfort beach stay', locations: ['Bangkok + Hua Hin', 'Phuket/Krabi one base'], nightlyL: [0.22, 0.42], suggestedNights: [5, 8], babyComfort: 85, honeymoonValue: 78, locationConvenience: 82, confidence: 76, estimateRisk: 'Medium', bestFor: 'Resort infrastructure, food, massages, and easy family logistics.', watchOut: 'Choose one beach base; island hopping is not baby-first.' },
+                { id: 'thailand_premium_resort', tier: 'premium', label: 'Premium Thailand resort', locations: ['Phuket luxury beach', 'Koh Samui by season', 'Bangkok luxury stop'], nightlyL: [0.48, 0.95], suggestedNights: [5, 8], babyComfort: 84, honeymoonValue: 86, locationConvenience: 78, confidence: 72, estimateRisk: 'Medium-high', bestFor: 'Beach luxury with strong service and food convenience.', watchOut: 'Peak beach areas can price like Bali premium.' }
+              ]
+            },
+            italy: {
+              label: 'Italy',
+              options: [
+                { id: 'italy_comfort_city', tier: 'comfort', label: 'Italy comfort city/apartment stay', locations: ['Rome', 'Florence', 'Lake/relaxed base'], nightlyL: [0.38, 0.72], suggestedNights: [6, 10], babyComfort: 62, honeymoonValue: 88, locationConvenience: 68, confidence: 66, estimateRisk: 'High', bestFor: 'Romantic walking-city trip with better room location and fewer bases.', watchOut: 'Small rooms, stairs, cobblestones, and train transfers affect baby comfort.' },
+                { id: 'italy_premium_boutique', tier: 'premium', label: 'Premium Italy boutique / lake stay', locations: ['Lake Como/Garda', 'Florence boutique', 'Rome premium'], nightlyL: [0.82, 1.65], suggestedNights: [6, 10], babyComfort: 66, honeymoonValue: 94, locationConvenience: 70, confidence: 60, estimateRisk: 'High', bestFor: 'High romance value when Europe is the emotional priority.', watchOut: 'Visa, seasonality, stroller logistics, and room size reduce certainty.' }
+              ]
+            }
+          }
+        },
+        combinations: {
+          uae_thailand: {
+            id: 'uae_thailand', name: 'UAE + Thailand', region: 'Middle East + SE Asia', type: 'soft landing + resort recovery', directionMatches: ['UAE + Thailand'],
+            countries: ['uae', 'thailand'], roles: ['soft landing / family support', 'baby-friendly resort recovery'], minDays: 12, idealDays: [14, 17], maxMajorLegs: 2, visaComplexity: 'medium',
+            baseBudgetL: [5.8, 7.8], travelHours: [7, 12], layovers: [1, 2], visa: 'UAE visa + Thailand entry', visaEase: 80,
+            babyComfort: 86, honeymoonValue: 80, travelFatigue: 76, routeComplexity: 72, confidence: 70,
+            monthFit: { Aug: 76, Sep: 78, Oct: 80, Nov: 86, Dec: 88 },
+            tagline: 'Easier resort payoff than Bali with a UAE soft landing.',
+            reasons: ['UAE gives the low-friction first leg and family/logistics support.', 'Thailand adds beach/resort comfort with stronger baby infrastructure.', 'Usually easier than Bali if the route and beach base are selected well.'],
+            warnings: ['Still a two-country trip, so avoid island hopping.', 'Thailand entry rules and resort transfer time need validation.'],
+            suggestedBases: ['UAE soft landing base', 'One Thailand beach/resort base'],
+            checkpoint: { trigger: 'after UAE recovery day', fallback: 'convert Thailand leg into UAE resort time', protect: 'baby recovery and beach/resort comfort' },
+            flightOptions: [
+              { id: 'uae_thailand_emirates_thai', label: 'UAE stop + Thai resort connector', carrierIds: ['emirates', 'thai'], routeShape: 'CCU → DXB/AUH → BKK/HKT → CCU', costL: [2.45, 3.35], durationHours: [7, 12], layovers: [1, 2], comfortScore: 84, estimateConfidence: 68, overUnderRisk: 'Medium', bestFor: 'Balanced UAE soft landing plus Thailand resort leg.', risk: 'Beach city and stopover pricing can move the estimate.' },
+              { id: 'uae_thailand_value_mix', label: 'Value UAE + Thailand mix', carrierIds: ['indigo', 'thai'], routeShape: 'CCU → UAE → BKK/HKT → CCU', costL: [2.05, 2.95], durationHours: [8, 14], layovers: [1, 3], comfortScore: 70, estimateConfidence: 60, overUnderRisk: 'Medium-high', bestFor: 'Budget control if timings remain baby-friendly.', risk: 'Baggage and split-carrier friction can reduce value.' }
+            ]
+          },
+          uae_sri_lanka: {
+            id: 'uae_sri_lanka', name: 'UAE + Sri Lanka', region: 'Middle East + South Asia', type: 'soft landing + scenic reset', directionMatches: ['UAE + Sri Lanka'],
+            countries: ['uae', 'sri_lanka'], roles: ['soft landing / family support', 'short-haul scenic resort reset'], minDays: 10, idealDays: [12, 16], maxMajorLegs: 2, visaComplexity: 'medium-low',
+            baseBudgetL: [5.2, 7.0], travelHours: [6, 10], layovers: [1, 2], visa: 'UAE visa + Sri Lanka ETA', visaEase: 82,
+            babyComfort: 88, honeymoonValue: 78, travelFatigue: 82, routeComplexity: 78, confidence: 72,
+            monthFit: { Aug: 74, Sep: 76, Oct: 86, Nov: 86, Dec: 84 },
+            tagline: 'Lower-fatigue combo with a scenic second half.',
+            reasons: ['UAE protects the arrival and recovery phase.', 'Sri Lanka gives scenery and resort value without Bali-level distance.', 'Best when the Sri Lanka leg uses one calm coastal/resort base.'],
+            warnings: ['Sri Lanka region choice changes by month.', 'Two admin paths still need document readiness.'],
+            suggestedBases: ['UAE family/support base', 'One Sri Lanka resort/scenic base'],
+            checkpoint: { trigger: 'after UAE recovery day', fallback: 'choose UAE-only or single-country Sri Lanka', protect: 'short transfers and baby sleep rhythm' },
+            flightOptions: [
+              { id: 'uae_srilanka_etihad_srilankan', label: 'UAE + SriLankan simple mix', carrierIds: ['etihad', 'srilankan'], routeShape: 'CCU → AUH → CMB → CCU', costL: [2.15, 2.95], durationHours: [6, 10], layovers: [1, 2], comfortScore: 82, estimateConfidence: 70, overUnderRisk: 'Medium', bestFor: 'Lowest-fatigue two-country arc.', risk: 'Sri Lanka regional season and connection timing need validation.' },
+              { id: 'uae_srilanka_value_mix', label: 'Value UAE + Sri Lanka routing', carrierIds: ['indigo', 'srilankan'], routeShape: 'CCU → UAE → CMB → CCU', costL: [1.85, 2.55], durationHours: [7, 12], layovers: [1, 2], comfortScore: 70, estimateConfidence: 64, overUnderRisk: 'Medium', bestFor: 'Controlled budget with manageable fatigue.', risk: 'Split-carrier assumptions and baggage need checking.' }
+            ]
+          },
+          thailand_vietnam: {
+            id: 'thailand_vietnam', name: 'Thailand + Vietnam', region: 'SE Asia', type: 'resort + scenic value', directionMatches: ['Thailand + Vietnam', 'Vietnam option'],
+            countries: ['thailand', 'vietnam'], roles: ['resort recovery', 'scenic value / cafés / culture'], minDays: 14, idealDays: [15, 19], maxMajorLegs: 2, visaComplexity: 'medium',
+            baseBudgetL: [5.6, 7.5], travelHours: [8, 13], layovers: [1, 2], visa: 'Thailand entry + Vietnam e-visa', visaEase: 74,
+            babyComfort: 78, honeymoonValue: 80, travelFatigue: 70, routeComplexity: 66, confidence: 64,
+            monthFit: { Aug: 70, Sep: 76, Oct: 82, Nov: 84, Dec: 84 },
+            tagline: 'High-value SE Asia combo if bases are limited.',
+            reasons: ['Thailand provides easier resort infrastructure.', 'Vietnam adds scenery, cafés, and strong value.', 'Works when the route is one Thailand base plus one Vietnam base.'],
+            warnings: ['Too many regions will break baby pacing.', 'Vietnam e-visa entry/exit points must match the route.'],
+            suggestedBases: ['One Thailand resort/arrival base', 'One Vietnam scenic/city base'],
+            checkpoint: { trigger: 'before booking second-country transfers', fallback: 'drop Vietnam and make Thailand the full trip', protect: 'transfer control and visa entry/exit accuracy' },
+            flightOptions: [
+              { id: 'thai_vietnam_thai_vietnam', label: 'Thai + Vietnam connector', carrierIds: ['thai', 'vietnamAirlines'], routeShape: 'CCU → BKK/HKT → Vietnam → CCU', costL: [2.10, 3.05], durationHours: [8, 13], layovers: [1, 2], comfortScore: 78, estimateConfidence: 62, overUnderRisk: 'Medium-high', bestFor: 'Best if Thailand and Vietnam city pair align.', risk: 'Internal city choice can change cost and fatigue.' },
+              { id: 'thai_vietnam_lcc', label: 'Value SE Asia mix', carrierIds: ['indigo', 'airAsia'], routeShape: 'CCU → BKK/KUL → Vietnam → CCU', costL: [1.65, 2.45], durationHours: [10, 16], layovers: [2, 3], comfortScore: 60, estimateConfidence: 52, overUnderRisk: 'High', bestFor: 'Only if budget wins over comfort.', risk: 'Separate bookings, baggage, and layover fatigue are high.' }
+            ]
+          },
+          uae_vietnam: {
+            id: 'uae_vietnam', name: 'UAE + Vietnam', region: 'Middle East + SE Asia', type: 'soft landing + scenic value', directionMatches: ['UAE + Vietnam', 'Vietnam option'],
+            countries: ['uae', 'vietnam'], roles: ['soft landing / support', 'value scenic second half'], minDays: 14, idealDays: [15, 18], maxMajorLegs: 2, visaComplexity: 'medium-high',
+            baseBudgetL: [6.0, 8.0], travelHours: [9, 14], layovers: [1, 2], visa: 'UAE visa + Vietnam e-visa', visaEase: 70,
+            babyComfort: 76, honeymoonValue: 78, travelFatigue: 66, routeComplexity: 62, confidence: 60,
+            monthFit: { Aug: 66, Sep: 74, Oct: 80, Nov: 82, Dec: 78 },
+            tagline: 'Possible, but only if routing is clean.',
+            reasons: ['UAE can soften the first leg.', 'Vietnam adds strong value and scenic variety.', 'Works best with one Vietnam base and no internal hopping.'],
+            warnings: ['Routing can become awkward compared with Thailand or Sri Lanka.', 'Vietnam e-visa entry/exit details must be precise.'],
+            suggestedBases: ['UAE recovery base', 'One Vietnam scenic/city base'],
+            checkpoint: { trigger: 'before locking Vietnam sectors', fallback: 'replace Vietnam with Thailand/Sri Lanka or keep UAE-only', protect: 'route simplicity and visa accuracy' },
+            flightOptions: [
+              { id: 'uae_vietnam_emirates_vietnam', label: 'UAE + Vietnam connector', carrierIds: ['emirates', 'vietnamAirlines'], routeShape: 'CCU → DXB/AUH → Vietnam → CCU', costL: [2.55, 3.55], durationHours: [9, 14], layovers: [1, 2], comfortScore: 76, estimateConfidence: 58, overUnderRisk: 'High', bestFor: 'Only when timings are clean and Vietnam base is simple.', risk: 'Routing uncertainty is the main estimate risk.' }
+            ]
+          },
+          italy_uae: {
+            id: 'italy_uae', name: 'Italy + UAE', region: 'Europe + Middle East', type: 'romance + recovery stopover', directionMatches: ['Italy + UAE', 'Europe option'],
+            countries: ['italy', 'uae'], roles: ['romantic Europe core', 'stopover recovery / family support'], minDays: 16, idealDays: [17, 22], maxMajorLegs: 2, visaComplexity: 'high',
+            baseBudgetL: [8.6, 11.8], travelHours: [12, 18], layovers: [1, 2], visa: 'Schengen + UAE visa', visaEase: 52,
+            babyComfort: 66, honeymoonValue: 90, travelFatigue: 56, routeComplexity: 58, confidence: 58,
+            monthFit: { Aug: 62, Sep: 78, Oct: 74, Nov: 64, Dec: 60 },
+            tagline: 'Romantic but high-admin; UAE must reduce fatigue.',
+            reasons: ['Italy gives the strongest Europe romance value.', 'UAE can become a recovery stopover rather than another busy leg.', 'Works only with enough days and early visa readiness.'],
+            warnings: ['Schengen effort, longer flights, and stroller logistics are heavy.', 'Avoid adding too many Italy bases with an infant.'],
+            suggestedBases: ['One Italy romance base', 'One UAE recovery/stopover base'],
+            checkpoint: { trigger: 'before visa appointment and non-refundable bookings', fallback: 'drop Europe and choose UAE + resort destination', protect: 'visa certainty and baby fatigue' },
+            flightOptions: [
+              { id: 'italy_uae_emirates', label: 'Europe via UAE premium route', carrierIds: ['emirates', 'etihad'], routeShape: 'CCU → UAE → Italy → UAE/CCU', costL: [3.45, 4.95], durationHours: [12, 18], layovers: [1, 2], comfortScore: 86, estimateConfidence: 58, overUnderRisk: 'High', bestFor: 'Best if UAE is a true recovery stopover.', risk: 'Schengen-season fares and stopover pricing can swing heavily.' }
+            ]
+          }
+        },
+        destinations: {
+          uae_bali: {
+            id: 'uae_bali', name: 'UAE + Bali', region: 'Middle East + SE Asia', type: 'family-support + honeymoon', directionMatches: ['UAE + Bali', 'Bali-heavy'],
+            baseBudgetL: [6.4, 7.6], travelHours: [8, 14], layovers: [1, 2], visa: 'Easy / VOA mix', visaEase: 82,
+            babyComfort: 84, honeymoonValue: 92, travelFatigue: 68,
+            monthFit: { Aug: 88, Sep: 86, Oct: 84, Nov: 80, Dec: 78 },
+            tagline: 'Family support first, honeymoon payoff later.',
+            reasons: ['Abu Dhabi gives a soft landing and family support.', 'Bali gives the strongest honeymoon memory value.', 'Good emotional arc: settle, explore, then slow down.'],
+            warnings: ['Bali leg is the main fatigue risk.', 'Premium villas can move budget upward quickly.'],
+            suggestedBases: ['Family-support arrival base', 'City visual / food base', 'Slow villa or resort base'],
+            checkpoint: { trigger: 'after first international leg', fallback: 'convert to a shorter low-friction city/resort plan', protect: 'baby sleep, recovery, and the core honeymoon memory' }
+          },
+          uae: {
+            id: 'uae', name: 'UAE only', region: 'Middle East', type: 'low-friction comfort', directionMatches: ['UAE only'],
+            baseBudgetL: [4.8, 6.2], travelHours: [5, 7], layovers: [0, 1], visa: 'UAE visa', visaEase: 78,
+            babyComfort: 92, honeymoonValue: 70, travelFatigue: 90,
+            monthFit: { Aug: 72, Sep: 74, Oct: 82, Nov: 90, Dec: 92 },
+            tagline: 'Lowest-friction international family trip.',
+            reasons: ['Shorter travel and easier recovery with baby.', 'Excellent fallback if Bali feels too ambitious.', 'Weather improves strongly from November onward.'],
+            warnings: ['Less honeymoon novelty than Bali or Sri Lanka.', 'August and September can feel very hot.'],
+            suggestedBases: ['One family-friendly city base', 'One resort-style leisure base'],
+            checkpoint: { trigger: 'after arrival and first rest day', fallback: 'reduce outings and keep one comfortable base', protect: 'heat management, nap rhythm, and easy meals' }
+          },
+          sri_lanka: {
+            id: 'sri_lanka', name: 'Sri Lanka', region: 'South Asia', type: 'scenic resort reset', directionMatches: ['Sri Lanka option'],
+            baseBudgetL: [4.4, 6.1], travelHours: [5, 9], layovers: [0, 1], visa: 'ETA', visaEase: 86,
+            babyComfort: 86, honeymoonValue: 82, travelFatigue: 84,
+            monthFit: { Aug: 76, Sep: 75, Oct: 86, Nov: 84, Dec: 82 },
+            tagline: 'Closest scenic international reset.',
+            reasons: ['Shorter travel fatigue than Bali or Europe.', 'Strong fit for October–December resort-style travel.', 'Good comfort value without stretching into premium Europe costs.'],
+            warnings: ['Region choice matters by month.', 'Avoid too many hotel/base changes with baby.'],
+            suggestedBases: ['One beach/resort base', 'Optional second scenic base only if baby rhythm is stable'],
+            checkpoint: { trigger: 'after the first resort night', fallback: 'stay in one coastal/resort base', protect: 'short transfers and monsoon-side fit' }
+          },
+          vietnam: {
+            id: 'vietnam', name: 'Vietnam', region: 'SE Asia', type: 'value scenic exploration', directionMatches: ['Vietnam option'],
+            baseBudgetL: [5.0, 6.8], travelHours: [7, 12], layovers: [1, 2], visa: 'E-visa', visaEase: 78,
+            babyComfort: 78, honeymoonValue: 80, travelFatigue: 72,
+            monthFit: { Aug: 70, Sep: 78, Oct: 82, Nov: 84, Dec: 80 },
+            tagline: 'High-value scenic exploration, but needs restraint.',
+            reasons: ['Strong value for premium stays and food.', 'Good mix of scenery, cafés, culture, and light exploration.', 'Can work well with smart region selection.'],
+            warnings: ['More complex routing than Sri Lanka.', 'Too many regions will become tiring with baby.'],
+            suggestedBases: ['One city landing base', 'One scenic resort/base'],
+            checkpoint: { trigger: 'after first transfer', fallback: 'drop extra regions and hold one resort base', protect: 'transfer control and baby recovery' }
+          },
+          thailand: {
+            id: 'thailand', name: 'Thailand', region: 'SE Asia', type: 'resort + food', directionMatches: [],
+            baseBudgetL: [5.2, 7.0], travelHours: [6, 10], layovers: [1, 2], visa: 'Easy', visaEase: 88,
+            babyComfort: 84, honeymoonValue: 78, travelFatigue: 76,
+            monthFit: { Aug: 74, Sep: 76, Oct: 78, Nov: 82, Dec: 86 },
+            tagline: 'Baby-friendly resort infrastructure with good value.',
+            reasons: ['Good beach/resort option with baby-friendly infrastructure.', 'Food, massages, and resorts are easy to plan around.', 'Works well when the route is kept simple.'],
+            warnings: ['Replacing Bali only makes sense if flights are easier.', 'Pick one beach base rather than hopping.'],
+            suggestedBases: ['One arrival base', 'One beach/resort base'],
+            checkpoint: { trigger: 'after arrival day', fallback: 'avoid island hopping and hold one resort base', protect: 'food ease, beach comfort, and low transfer load' }
+          },
+          italy: {
+            id: 'italy', name: 'Italy', region: 'Europe', type: 'romantic culture', directionMatches: ['Europe option'],
+            baseBudgetL: [7.8, 10.2], travelHours: [12, 18], layovers: [1, 2], visa: 'Schengen', visaEase: 48,
+            babyComfort: 62, honeymoonValue: 88, travelFatigue: 50,
+            monthFit: { Aug: 66, Sep: 78, Oct: 74, Nov: 62, Dec: 58 },
+            tagline: 'Romantic, but heavier with an infant.',
+            reasons: ['High honeymoon value if you want Europe.', 'October can still be pleasant in parts of Italy.', 'Food and walking-city charm are strong.'],
+            warnings: ['Longer flights, Schengen effort, and more walking.', 'Less forgiving if baby sleep is unstable.'],
+            suggestedBases: ['One arrival city base', 'One relaxed romance base'],
+            checkpoint: { trigger: 'before locking visas/flights', fallback: 'choose a closer resort-led destination', protect: 'visa effort, stroller logistics, and fewer bases' }
+          }
+        }
+      };
+
+      const destinationDatabase = Object.fromEntries(
+        ['Aug', 'Sep', 'Oct', 'Nov', 'Dec'].map((month) => [
+          month,
+          getAllRecommendationCandidates({ month, tripDays: 17, destinationMode: plannerData.uiOptions.destinationModes[0].value, tier: { label: 'Comfort', multipliers: { flight: 1.15, stay: 1.25, local: 1.15, buffer: 1.12 } }, budgetCap: null })
+            .filter((destination) => destination.monthFit[month])
+            .map((destination) => ({
+              id: destination.id,
+              name: destination.name,
+              score: destination.monthFit[month],
+              comfort: destination.babyComfort >= 88 ? 'Very high' : destination.babyComfort >= 80 ? 'High' : destination.babyComfort >= 70 ? 'Medium-high' : 'Medium',
+              fatigue: destination.travelFatigue >= 85 ? 'Low' : destination.travelFatigue >= 75 ? 'Low-medium' : destination.travelFatigue >= 65 ? 'Medium' : 'High',
+              budget: `${formatLakhs(destination.baseBudgetL[0])}–${formatLakhs(destination.baseBudgetL[1])}`,
+              visa: destination.visa,
+              note: destination.tagline
+            }))
+            .sort((a, b) => b.score - a.score)
+        ])
+      );
+
+
+      const plannerSystemAudit = {
+        dynamicClassWhitelist: [
+          'active', 'selected', 'valid', 'invalid', 'ok', 'primary', 'secondary', 'danger',
+          'medium', 'low', 'neutral', 'up', 'down',
+          'risk-low', 'risk-medium', 'risk-high',
+          'domain-card-baby', 'domain-card-honeymoon', 'domain-card-budget', 'domain-card-risk', 'domain-card-admin', 'domain-card-confidence',
+          'card-domain-planner', 'card-domain-story', 'card-domain-plan', 'card-domain-stay', 'card-domain-baby', 'card-domain-honeymoon', 'card-domain-budget', 'card-domain-risk', 'card-domain-admin', 'card-domain-decision', 'card-domain-confidence',
+          'domain-baby', 'domain-honeymoon', 'domain-budget', 'domain-risk', 'domain-admin', 'domain-confidence', 'domain-route', 'domain-stay', 'domain-planner', 'domain-decision'
+        ],
+        approvedRawPxUses: [
+          'viewport breakpoints', '1px borders/hidden inputs', 'optical transforms', 'max page width'
+        ]
+      };
+
+      function auditPlannerDataShape() {
+        const issues = [];
+        const requiredDestinationFields = ['id', 'name', 'monthFit', 'budget', 'babyComfort', 'honeymoonValue', 'visaEase'];
+        Object.values(plannerData.destinations || {}).forEach((destination) => {
+          requiredDestinationFields.forEach((field) => {
+            if (!(field in destination)) issues.push(`Destination ${destination.id || destination.name || 'unknown'} missing ${field}`);
+          });
+        });
+        Object.values(plannerData.combinations || {}).forEach((combo) => {
+          ['id', 'name', 'countries', 'minDays', 'idealDays', 'roles'].forEach((field) => {
+            if (!(field in combo)) issues.push(`Combination ${combo.id || combo.name || 'unknown'} missing ${field}`);
+          });
+        });
+        if (issues.length) console.warn('Planner data audit warnings', issues);
+        return issues;
+      }
+
+      const experienceTiers = {
+        frugal: { label: 'Frugal', philosophy: 'Spend carefully; accept timing/stay compromises.', multipliers: { flight: 0.85, stay: 0.80, local: 0.85, buffer: 1.05 } },
+        mid: { label: 'Mid', philosophy: 'Comfortable but cost-aware.', multipliers: { flight: 1.00, stay: 1.00, local: 1.00, buffer: 1.08 } },
+        comfort: { label: 'Comfort', philosophy: 'Low-friction, family-friendly, no unnecessary luxury.', multipliers: { flight: 1.15, stay: 1.25, local: 1.15, buffer: 1.12 } },
+        highQuality: { label: 'High Quality', philosophy: 'Better timings, better locations, stronger stays.', multipliers: { flight: 1.35, stay: 1.50, local: 1.25, buffer: 1.15 } },
+        premium: { label: 'Premium', philosophy: 'Minimize friction and maximize experience.', multipliers: { flight: 1.60, stay: 1.90, local: 1.45, buffer: 1.18 } }
+      };
+      const capKey = plannerStorage.keys.budgetCap;
+      function getSelectedTier() {
+        const choices = readJSON(choiceKey);
+        return experienceTiers[choices.experienceTier] || experienceTiers.comfort;
+      }
+      function getBudgetCap() {
+        const cap = Number(storage.getItem(capKey) || 0);
+        return Number.isFinite(cap) && cap > 0 ? cap : null;
+      }
+      function formatINRLakh(value) {
+        return `₹${(value / 100000).toFixed(1).replace('.0', '')}L`;
+      }
+      function hydrateBudgetCap() {
+        const input = document.getElementById('budgetCap');
+        if (!input) return;
+        const saved = getBudgetCap();
+        if (saved) input.value = saved;
+        input.addEventListener('input', () => {
+          const value = Number(input.value || 0);
+          if (value > 0) storage.setItem(capKey, String(value));
+          else storage.removeItem(capKey);
+          setSaveState('Saved');
+          renderDynamicBudget();
+        });
+      }
+
+      function readJSON(key) {
+        try { return JSON.parse(storage.getItem(key)) || {}; }
+        catch (error) { return {}; }
+      }
+
+      function writeJSON(key, data) {
+        storage.setItem(key, JSON.stringify(data));
+      }
+
+      function migratePlannerStorage() {
+        Object.entries(plannerStorage.legacyKeys).forEach(([keyName, legacyKeys]) => {
+          const targetKey = plannerStorage.keys[keyName];
+          if (!targetKey || storage.getItem(targetKey)) return;
+          const legacyKey = legacyKeys.find((key) => storage.getItem(key));
+          if (!legacyKey) return;
+          storage.setItem(targetKey, storage.getItem(legacyKey));
+        });
+      }
+
+      migratePlannerStorage();
+
+      function setSaveState(text) {
+        const saveState = document.getElementById('saveState');
+        if (!saveState) return;
+        saveState.textContent = text;
+        window.clearTimeout(setSaveState.timer);
+        setSaveState.timer = window.setTimeout(() => {
+          saveState.textContent = 'Saved locally';
+        }, 1500);
+      }
+
+      function collectNotes() {
+        return noteFields.reduce((acc, id) => {
+          const field = document.getElementById(id);
+          acc[id] = field ? field.value : '';
+          return acc;
+        }, {});
+      }
+
+      function hydrateNotes(data) {
+        noteFields.forEach((id) => {
+          const field = document.getElementById(id);
+          if (field) field.value = data[id] || '';
+        });
+      }
+
+      function collectVariables() {
+        const start = document.getElementById('tripStart');
+        const end = document.getElementById('tripEnd');
+        return {
+          start: start ? start.value : '2026-08-01',
+          end: end ? end.value : '2026-08-17'
+        };
+      }
+
+      function getVariables() {
+        return { ...collectVariables(), ...readJSON(variableKey) };
+      }
+
+      function getChoices() {
+        return readJSON(choiceKey);
+      }
+
+      function getTripDays() {
+        const vars = getVariables();
+        const start = new Date((vars.start || '2026-08-01') + 'T00:00:00');
+        const end = new Date((vars.end || '2026-08-17') + 'T00:00:00');
+        const days = Math.round((end - start) / 86400000) + 1;
+        return Number.isFinite(days) && days > 0 ? days : 17;
+      }
+
+      function formatReadableDate(value) {
+        if (!value) return '';
+        const date = new Date(value + 'T00:00:00');
+        return date.toLocaleDateString('en-IN', { month: 'short', day: 'numeric' });
+      }
+
+      function getMonthFromDate(value) {
+        const date = new Date((value || '2026-08-01') + 'T00:00:00');
+        return ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][date.getMonth()] || 'Aug';
+      }
+
+      function renderVariableSummary() {
+        const summary = document.getElementById('variableSummary');
+        if (!summary) return;
+        const vars = getVariables();
+        const choices = getChoices();
+        const mode = choices.destinationMode || plannerData.uiOptions.destinationModes[0].value;
+        const tier = getSelectedTier();
+        summary.textContent = `Current plan: ${formatReadableDate(vars.start)} – ${formatReadableDate(vars.end)} (${getTripDays()} days), ${mode}, ${tier.label} tier.`;
+      }
+
+      function hydrateVariables() {
+        const vars = readJSON(variableKey);
+        const start = document.getElementById('tripStart');
+        const end = document.getElementById('tripEnd');
+        if (start && vars.start) start.value = vars.start;
+        if (end && vars.end) end.value = vars.end;
+
+        [start, end].forEach((field) => {
+          if (!field) return;
+          field.addEventListener('change', () => {
+            const next = { ...readJSON(variableKey), ...collectVariables(), month: getMonthFromDate(field.value) };
+            writeJSON(variableKey, next);
+            setSaveState('Saved');
+            renderAll();
+          });
+        });
+      }
+
+      function renderChoiceGroups() {
+        const groups = [
+          { id: 'destinationModeGrid', options: plannerData.uiOptions.destinationModes },
+          { id: 'overallFeelingGrid', options: plannerData.uiOptions.overallFeeling },
+          { id: 'preferenceMarkersGrid', options: plannerData.uiOptions.preferenceMarkers },
+          { id: 'decisionAlternateMonthsGrid', options: plannerData.uiOptions.alternateMonths },
+          { id: 'decisionBackupDestinationsGrid', options: plannerData.uiOptions.backupDestinations },
+          { id: 'decisionFallbackStrategyGrid', options: plannerData.uiOptions.fallbackStrategy },
+          { id: 'nonNegotiablesGrid', options: plannerData.uiOptions.nonNegotiables },
+          { id: 'worriesGrid', options: plannerData.uiOptions.worries },
+          { id: 'worthUpgradingGrid', options: plannerData.uiOptions.worthUpgrading },
+          { id: 'skipSignalsGrid', options: plannerData.uiOptions.skipSignals }
+        ];
+
+        groups.forEach(({ id, options }) => {
+          const el = document.getElementById(id);
+          if (!el || el.dataset.rendered === 'true') return;
+          el.innerHTML = options.map((option) => (
+            `<button class="choice-chip domain-${option.domain || 'decision'}" type="button" data-choice="${option.value}">${option.label}</button>`
+          )).join('');
+          el.dataset.rendered = 'true';
+        });
+      }
+
+      function normaliseLegacyChoiceState() {
+        const state = getChoices();
+        let changed = false;
+        Object.entries(plannerData.uiOptions).forEach(([groupName, options]) => {
+          const value = state[groupName];
+          if (!value) return;
+          options.forEach((option) => {
+            const legacyValues = option.legacyValues || [];
+            if (Array.isArray(value)) {
+              const next = value.map((item) => legacyValues.includes(item) ? option.value : item);
+              if (next.join('||') !== value.join('||')) { state[groupName] = [...new Set(next)]; changed = true; }
+            } else if (legacyValues.includes(value)) {
+              state[groupName] = option.value; changed = true;
+            }
+          });
+        });
+        if (changed) writeJSON(choiceKey, state);
+      }
+
+      function hydrateChoices() {
+        const state = getChoices();
+        document.querySelectorAll('[data-choice-group]').forEach((group) => {
+          const groupName = group.dataset.choiceGroup;
+          const saved = state[groupName];
+          const savedList = Array.isArray(saved) ? saved : saved ? [saved] : [];
+          group.querySelectorAll('.choice-chip, .tier-card').forEach((chip) => {
+            chip.classList.toggle('selected', savedList.includes(chip.dataset.choice));
+          });
+        });
+      }
+
+      function bindChoices() {
+        if (document.body.dataset.choiceBinding === 'true') return;
+        document.body.dataset.choiceBinding = 'true';
+        document.addEventListener('click', (event) => {
+          const chip = event.target.closest('.choice-chip, .tier-card');
+          if (!chip) return;
+          const group = chip.closest('[data-choice-group]');
+          if (!group) return;
+
+          const groupName = group.dataset.choiceGroup;
+          const state = getChoices();
+
+          if (group.dataset.multi === 'true') {
+            const current = Array.isArray(state[groupName]) ? state[groupName] : [];
+            state[groupName] = current.includes(chip.dataset.choice)
+              ? current.filter((item) => item !== chip.dataset.choice)
+              : [...current, chip.dataset.choice];
+          } else {
+            state[groupName] = chip.dataset.choice;
+          }
+
+          writeJSON(choiceKey, state);
+          if (groupName === 'experienceTier') activePlanStep = 'direction';
+          if (groupName === 'destinationMode') activePlanStep = 'story';
+          setSaveState('Saved');
+          renderAll();
+        });
+      }
+
+      function renderMonthExplorer() {
+        const strip = document.getElementById('monthStrip');
+        const board = document.getElementById('destinationBoard');
+        if (!strip || !board) return;
+
+        const vars = getVariables();
+        const selectedMonth = vars.month || getMonthFromDate(vars.start);
+        const months = Object.keys(destinationDatabase);
+
+        strip.innerHTML = months.map((month) => (
+          `<button class="month-chip ${month === selectedMonth ? 'active' : ''}" type="button" data-month="${month}">${month}</button>`
+        )).join('');
+
+        const destinations = destinationDatabase[selectedMonth] || [];
+        board.innerHTML = destinations.map((item) => {
+          const medium = item.score < 80 ? ' medium' : '';
+          return `
+            <article class="destination-card card-domain-planner card-density-compact">
+              <div class="destination-card-head">
+                <h4>${item.name}</h4>
+                <span class="fit-score${medium}">${item.score}% fit</span>
+              </div>
+              <p>${item.note}</p>
+              <div class="destination-meta">
+                <span class="domain-baby">Comfort: ${item.comfort}</span>
+                <span class="domain-route">Fatigue: ${item.fatigue}</span>
+                <span class="domain-budget">${item.budget}</span>
+                <span class="domain-admin">${item.visa}</span>
+              </div>
+            </article>
+          `;
+        }).join('');
+
+        strip.querySelectorAll('.month-chip').forEach((button) => {
+          button.addEventListener('click', () => {
+            const varsNow = getVariables();
+            varsNow.month = button.dataset.month;
+            writeJSON(variableKey, varsNow);
+            setSaveState('Saved');
+            renderAll();
+          });
+        });
+      }
+
+      function formatLakhs(value) {
+        return `₹${value.toFixed(1).replace('.0', '')}L`;
+      }
+
+      function domainClass(domain, level = '') {
+        const base = `domain-${domain}`;
+        return level ? `${base} ${level}` : base;
+      }
+
+      function domainPill(domain, label, level = '') {
+        return `<em class="domain-pill ${domainClass(domain, level)}">${label}</em>`;
+      }
+
+      function domainTag(domain, label, level = '') {
+        return `<span class="tag ${domainClass(domain, level)}">${label}</span>`;
+      }
+
+      function iconDomain(domain, size = 'sm') {
+        return `planner-icon sketch-icon icon-domain-${domain} icon-size-${size}`;
+      }
+
+      function confidenceLevel(value) {
+        const numeric = Number(String(value).replace(/[^0-9.]/g, ''));
+        if (!Number.isFinite(numeric)) return '';
+        return numeric >= 75 ? '' : numeric >= 65 ? 'medium' : 'low';
+      }
+
+      function riskLevel(text) {
+        const value = String(text || '').toLowerCase();
+        if (value.includes('high')) return 'low';
+        if (value.includes('low')) return '';
+        return 'medium';
+      }
+
+
+
+      function getCombinationProfile(destinationId) {
+        return (plannerData.combinations && plannerData.combinations[destinationId]) || null;
+      }
+
+      function getAllRecommendationCandidates(state = getPlannerState()) {
+        const singles = Object.values(plannerData.destinations || {}).map((item) => ({ ...item, candidateType: 'single', feasibility: { allowed: true, penalty: 0, notes: ['Single destination is always feasible subject to visa and month fit.'] } }));
+        const combos = Object.values(plannerData.combinations || {})
+          .map((item) => ({ ...item, candidateType: 'combination', feasibility: evaluateCombinationFeasibility(item, state) }))
+          .filter((item) => item.feasibility.allowed);
+        return [...singles, ...combos];
+      }
+
+      function evaluateCombinationFeasibility(combo, state = getPlannerState()) {
+        const notes = [];
+        let penalty = 0;
+        let allowed = true;
+        const days = Number(state.tripDays || 17);
+
+        if (days < 10) { allowed = false; notes.push('Under 10 days: single-country only.'); }
+        else if (days < combo.minDays) { allowed = false; notes.push(`${combo.name} needs at least ${combo.minDays} days.`); }
+        else if (days < (combo.idealDays?.[0] || combo.minDays)) { penalty += 5; notes.push('Feasible, but slightly compressed for this combo.'); }
+        else notes.push('Duration supports this combination.');
+
+        if (combo.visaComplexity === 'high' && days < 16) { allowed = false; notes.push('High visa complexity needs a longer trip buffer.'); }
+        if (combo.visaComplexity === 'medium-high') { penalty += 4; notes.push('Visa/admin complexity needs tighter validation.'); }
+        if ((combo.maxMajorLegs || 2) > 2) { penalty += 6; notes.push('Extra major legs raise fatigue risk.'); }
+        if ((combo.babyComfort || 0) < 74) { allowed = false; notes.push('Baby comfort falls below the feasibility threshold.'); }
+        if (!combo.roles || combo.roles.length < 2) { allowed = false; notes.push('Role split is not clear enough.'); }
+        if ((combo.routeComplexity || 70) < 62) { penalty += 5; notes.push('Route shape is conditional; only allow if live flights are clean.'); }
+
+        const directionMatch = (combo.directionMatches || []).includes(state.destinationMode);
+        if (directionMatch) notes.push('Matches selected destination direction.');
+
+        return { allowed, penalty, notes };
+      }
+
+      function getVisaProfileFor(destinationId) {
+        const catalog = plannerData.visaCatalog || {};
+        return (catalog.destinations && catalog.destinations[destinationId]) || (catalog.destinations && catalog.destinations.uae_bali) || {
+          label: 'Visa path', visaType: 'Validate current rules', adminComplexity: 60, confidence: 55, risk: 'Medium-high',
+          processingWindow: 'Validate before booking', documents: ['Infant passport', 'Return tickets', 'Hotel confirmations', 'Travel insurance'],
+          bookingRule: 'Do not lock non-refundable bookings until entry rules are verified.', babyNote: 'Infant documentation is the gatekeeper.'
+        };
+      }
+
+      function renderPlannerIntelligence() {
+        const card = document.getElementById('plannerIntelligenceCard');
+        if (!card) return;
+        const state = getPlannerState();
+        const primary = getPrimaryRecommendation();
+        const visaProfile = getVisaProfileFor(primary.id);
+        const budget = primary.calculatedBudget || estimateDestinationBudget(primary, state);
+        card.innerHTML = `
+          <h3>How this planner is thinking</h3>
+          <p>This plan is calculated from your current inputs: <strong>${state.month}</strong>, <strong>${state.tier.label}</strong> tier, <strong>${state.destinationMode}</strong>, and a <strong>${state.tripDays}-day</strong> trip.</p>
+          <div class="planner-intelligence-list">
+            <div class="planner-intelligence-row">${domainPill('baby', 'Baby comfort')}<span>Prioritises shorter travel, fewer hotel switches, recovery days, and reliable sleep logistics.</span></div>
+            <div class="planner-intelligence-row">${domainPill('route', 'Travel fatigue')}<span>Compares route duration, layovers, and long-haul effort against the experience payoff.</span></div>
+            <div class="planner-intelligence-row">${domainPill('budget', 'Budget fit')}<span>Derives the envelope from experience tier, route estimate, stay database, local spend, and buffer: ${formatLakhs(budget[0])}–${formatLakhs(budget[1])}.</span></div>
+            <div class="planner-intelligence-row">${domainPill('admin', 'Visa/admin')}<span>Uses the visa/document database. Current path: ${visaProfile.visaType}; risk: ${visaProfile.risk}.</span></div>
+            <div class="planner-intelligence-row">${domainPill('confidence', 'Confidence')}<span>Flags uncertainty where flight, stay, visa, or seasonal data needs live validation before booking.</span></div>
+          </div>
+          <div class="planner-intelligence-note">Change any Planner input above — recommendations, budget, stays, readiness, and checkpoint logic will adapt.</div>
+        `;
+      }
+
+      function getFlightOptionsFor(destinationId) {
+        const combo = getCombinationProfile(destinationId);
+        if (combo?.flightOptions?.length) return combo.flightOptions;
+        return plannerData.flightCatalog.routes[destinationId] || plannerData.flightCatalog.routes.uae_bali;
+      }
+
+      function scoreFlightOption(option, tierKey) {
+        const tierCostWeight = { frugal: 0.52, mid: 0.42, comfort: 0.30, highQuality: 0.20, premium: 0.12 }[tierKey] || 0.30;
+        const avgCost = (option.costL[0] + option.costL[1]) / 2;
+        const costScore = Math.max(40, 100 - avgCost * 16);
+        const confidenceScore = option.estimateConfidence || 60;
+        const layoverPenalty = Math.max(0, ((option.layovers?.[1] || 1) - 1) * 5);
+        return Math.round((option.comfortScore * (0.55 - tierCostWeight / 3)) + (costScore * tierCostWeight) + (confidenceScore * 0.18) - layoverPenalty);
+      }
+
+      function getRankedFlightOptions(destinationId) {
+        const tierKey = getChoices().experienceTier || 'comfort';
+        return getFlightOptionsFor(destinationId)
+          .map((option) => ({ ...option, calculatedFlightScore: scoreFlightOption(option, tierKey) }))
+          .sort((a, b) => b.calculatedFlightScore - a.calculatedFlightScore);
+      }
+
+      function getFlightEstimateFor(destinationId) {
+        const options = getRankedFlightOptions(destinationId);
+        const chosen = options[0] || getFlightOptionsFor('uae_bali')[0];
+        const backup = options[1] || chosen;
+        const carrierIds = Array.from(new Set([...(chosen.carrierIds || []), ...(backup.carrierIds || [])]));
+        return {
+          ...chosen,
+          options,
+          carriers: carrierIds,
+          rangeL: [Math.min(chosen.costL[0], backup.costL[0]), Math.max(chosen.costL[1], backup.costL[1])],
+          confidence: chosen.estimateConfidence >= 78 ? 'High' : chosen.estimateConfidence >= 68 ? 'Medium-high' : chosen.estimateConfidence >= 58 ? 'Medium' : 'Low',
+          risk: chosen.risk,
+          routeShape: chosen.routeShape,
+          selectedOptionLabel: chosen.label
+        };
+      }
+
+
+      function getStayCountryFor(destinationId) {
+        const combo = getCombinationProfile(destinationId);
+        if (combo?.countries?.length) return combo.countries;
+        const map = {
+          uae_bali: ['uae', 'indonesia'],
+          uae: ['uae'],
+          sri_lanka: ['sri_lanka'],
+          vietnam: ['vietnam'],
+          thailand: ['thailand'],
+          italy: ['italy']
+        };
+        return map[destinationId] || ['uae'];
+      }
+
+      function getStayOptionsFor(destinationId) {
+        return getStayCountryFor(destinationId).flatMap((countryId) => {
+          const country = plannerData.stayCatalog.countries[countryId];
+          return (country?.options || []).map((option) => ({ ...option, countryId, countryLabel: country.label }));
+        });
+      }
+
+      function scoreStayOption(option, tierKey) {
+        const tierMatch = option.tier === 'premium'
+          ? (tierKey === 'premium' ? 18 : tierKey === 'highQuality' ? 10 : tierKey === 'comfort' ? 3 : -6)
+          : (tierKey === 'frugal' ? 12 : tierKey === 'mid' ? 10 : tierKey === 'comfort' ? 8 : tierKey === 'highQuality' ? 2 : -5);
+        const avgNightly = (option.nightlyL[0] + option.nightlyL[1]) / 2;
+        const costScore = Math.max(35, 100 - avgNightly * 55);
+        const qualityScore = option.babyComfort * 0.34 + option.honeymoonValue * 0.26 + option.locationConvenience * 0.22 + option.confidence * 0.18;
+        const costWeight = { frugal: 0.34, mid: 0.26, comfort: 0.18, highQuality: 0.10, premium: 0.06 }[tierKey] || 0.18;
+        return Math.round(qualityScore * (1 - costWeight) + costScore * costWeight + tierMatch);
+      }
+
+      function getRankedStayOptions(destinationId) {
+        const tierKey = getChoices().experienceTier || 'comfort';
+        return getStayOptionsFor(destinationId)
+          .map((option) => ({ ...option, calculatedStayScore: scoreStayOption(option, tierKey) }))
+          .sort((a, b) => b.calculatedStayScore - a.calculatedStayScore);
+      }
+
+      function getStayEstimateFor(destinationId) {
+        const state = getPlannerState();
+        const options = getRankedStayOptions(destinationId);
+        const chosen = options[0] || getStayOptionsFor(destinationId)[0];
+        const backup = options[1] || chosen;
+        const nights = Math.max(1, state.tripDays - 1);
+        const suggestedHigh = Math.max(chosen.suggestedNights?.[1] || nights, backup.suggestedNights?.[1] || nights);
+        const scale = Math.max(0.82, Math.min(1.35, nights / suggestedHigh));
+        const low = Math.min(chosen.nightlyL[0], backup.nightlyL[0]) * nights * scale;
+        const high = Math.max(chosen.nightlyL[1], backup.nightlyL[1]) * nights * scale;
+        const avgConfidence = Math.round(((chosen.confidence || 65) + (backup.confidence || chosen.confidence || 65)) / 2);
+        return {
+          ...chosen,
+          options,
+          nights,
+          rangeL: [low, high],
+          confidence: avgConfidence >= 78 ? 'High' : avgConfidence >= 70 ? 'Medium-high' : avgConfidence >= 62 ? 'Medium' : 'Low',
+          selectedOptionLabel: chosen.label,
+          countries: Array.from(new Set(options.map((option) => option.countryLabel))).join(' + ')
+        };
+      }
+
+      function calculateBudget() {
+        const state = getPlannerState();
+        const choices = getChoices();
+        const markers = Array.isArray(choices.preferenceMarkers) ? choices.preferenceMarkers : [];
+        const primary = getPrimaryRecommendation();
+        const destination = plannerData.destinations[primary.id] || primary;
+        const tripDays = state.tripDays;
+        const tier = state.tier;
+        const flightEstimate = getFlightEstimateFor(destination.id);
+        const stayEstimate = getStayEstimateFor(destination.id);
+
+        const stayBase = destination.baseBudgetL || [3.0, 3.8];
+        const localShare = destination.id === 'italy' ? [0.18, 0.22] : [0.16, 0.20];
+        const durationMultiplier = Math.max(0.80, Math.min(1.25, tripDays / 17));
+
+        const budget = {
+          destinationName: destination.name,
+          flightEstimate,
+          stayEstimate,
+          flightsLow: flightEstimate.rangeL[0],
+          flightsHigh: flightEstimate.rangeL[1],
+          hotelsLow: stayEstimate.rangeL[0],
+          hotelsHigh: stayEstimate.rangeL[1],
+          expLow: stayBase[0] * localShare[0] * durationMultiplier,
+          expHigh: stayBase[1] * localShare[1] * durationMultiplier,
+          reasons: [
+            { text: `${destination.name} selected by recommendation engine`, type: 'neutral' },
+            { text: `Flight seed: ${flightEstimate.routeShape}`, type: 'neutral' },
+            { text: `Stay seed: ${stayEstimate.selectedOptionLabel}`, type: 'neutral' }
+          ]
+        };
+
+        if (tripDays > 17) budget.reasons.push({ text: `${tripDays - 17} extra day(s) increase stay + local budget`, type: 'up' });
+        if (tripDays < 17) budget.reasons.push({ text: `${17 - tripDays} fewer day(s) reduce stay + local budget`, type: 'down' });
+
+        if (choices.overallFeeling === 'Too packed' || markers.includes('Less hotel switching')) {
+          budget.hotelsLow *= 0.94; budget.hotelsHigh *= 0.94;
+          budget.expLow *= 0.92; budget.expHigh *= 0.92;
+          budget.reasons.push({ text: 'Less switching lowers hotel/transfer pressure', type: 'down' });
+        }
+
+        if (choices.overallFeeling === 'Need more honeymoon time' || markers.includes('Prioritise villa')) {
+          budget.hotelsLow += 0.35; budget.hotelsHigh += 0.55;
+          budget.reasons.push({ text: 'Villa/resort priority increases stay budget', type: 'up' });
+        }
+
+        if (choices.overallFeeling === 'Need more city / shopping time' || markers.includes('More shopping')) {
+          budget.expLow += 0.2; budget.expHigh += 0.35;
+          budget.reasons.push({ text: 'City/shopping preference increases experience buffer', type: 'up' });
+        }
+
+        if (markers.includes('Better photos')) {
+          budget.expLow += 0.12; budget.expHigh += 0.25;
+          budget.reasons.push({ text: 'Photo moments add a small experience buffer', type: 'up' });
+        }
+
+        if (markers.includes('Slow mornings') || markers.includes('Safer baby pacing')) {
+          budget.flightsLow += 0.12; budget.flightsHigh += 0.22;
+          budget.reasons.push({ text: 'Baby pacing favours better flight timings', type: 'up' });
+        }
+
+        const signals = getDecisionSignals();
+        if (signals.nonNegotiables.includes('fewer_hotel_changes') || signals.worries.includes('too_many_bases')) {
+          budget.hotelsLow *= 0.96; budget.hotelsHigh *= 0.96;
+          budget.expLow *= 0.94; budget.expHigh *= 0.94;
+          budget.reasons.push({ text: 'Decision signals reduce base changes and transfer pressure', type: 'down' });
+        }
+        if (signals.nonNegotiables.includes('baby_sleep_priority') || signals.worries.includes('baby_sleep_disruption')) {
+          budget.flightsLow += 0.12; budget.flightsHigh += 0.22;
+          budget.hotelsLow += 0.12; budget.hotelsHigh += 0.22;
+          budget.reasons.push({ text: 'Baby sleep signals add timing/stay quality buffer', type: 'up' });
+        }
+        if (signals.worthUpgrading.includes('direct_flights')) {
+          budget.flightsLow += 0.18; budget.flightsHigh += 0.35;
+          budget.reasons.push({ text: 'Direct-flight upgrade increases flight allowance', type: 'up' });
+        }
+        if (signals.worthUpgrading.includes('premium_resort') || signals.worthUpgrading.includes('room_view') || signals.nonNegotiables.includes('strong_resort')) {
+          budget.hotelsLow += 0.25; budget.hotelsHigh += 0.55;
+          budget.reasons.push({ text: 'Resort/view signals increase stay allowance', type: 'up' });
+        }
+        if (signals.worries.includes('budget_drift')) {
+          budget.expLow *= 0.92; budget.expHigh *= 0.92;
+          budget.reasons.push({ text: 'Budget-drift worry tightens local spend assumptions', type: 'down' });
+        }
+
+        budget.flightsLow *= tier.multipliers.flight;
+        budget.flightsHigh *= tier.multipliers.flight;
+        budget.hotelsLow *= tier.multipliers.stay;
+        budget.hotelsHigh *= tier.multipliers.stay;
+        budget.expLow *= tier.multipliers.local;
+        budget.expHigh *= tier.multipliers.local;
+        budget.reasons.push({ text: `${tier.label} tier: ${tier.philosophy}`, type: 'neutral' });
+
+        budget.flightsLow = Math.max(0.9, budget.flightsLow);
+        budget.flightsHigh = Math.max(budget.flightsLow + 0.2, budget.flightsHigh);
+        budget.hotelsLow = Math.max(1.4, budget.hotelsLow);
+        budget.hotelsHigh = Math.max(budget.hotelsLow + 0.2, budget.hotelsHigh);
+        budget.expLow = Math.max(0.5, budget.expLow);
+        budget.expHigh = Math.max(budget.expLow + 0.2, budget.expHigh);
+
+        const subtotalLow = budget.flightsLow + budget.hotelsLow + budget.expLow;
+        const subtotalHigh = budget.flightsHigh + budget.hotelsHigh + budget.expHigh;
+        budget.bufferLow = subtotalLow * (tier.multipliers.buffer - 1);
+        budget.bufferHigh = subtotalHigh * (tier.multipliers.buffer - 1);
+        budget.low = subtotalLow + budget.bufferLow;
+        budget.high = subtotalHigh + budget.bufferHigh;
+        return budget;
+      }
+
+      function setDynamicBar(id, low, high, max, colour) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const avg = (low + high) / 2;
+        const pct = Math.max(12, Math.min(96, (avg / max) * 100));
+        el.style.setProperty('--dyn-pct', `${pct}%`);
+        el.style.setProperty('--dyn-colour', colour);
+      }
+
+      function renderDynamicBudget() {
+        const budget = calculateBudget();
+        const total = document.getElementById('budgetTotal');
+        const summary = document.getElementById('budgetSummary');
+        const flightBudget = document.getElementById('flightBudget');
+        const hotelBudget = document.getElementById('hotelBudget');
+        const experienceBudget = document.getElementById('experienceBudget');
+        const reasons = document.getElementById('budgetReasons');
+        const breakdownList = document.getElementById('budgetBreakdownList');
+        const flightDataNote = document.getElementById('flightDataNote');
+        const flightOptionList = document.getElementById('flightOptionList');
+        if (!total || !summary || !flightBudget || !hotelBudget || !experienceBudget || !reasons) return;
+
+        total.textContent = `${formatLakhs(budget.low)}–${formatLakhs(budget.high)}`;
+        flightBudget.textContent = `${formatLakhs(budget.flightsLow)}–${formatLakhs(budget.flightsHigh)}`;
+        hotelBudget.textContent = `${formatLakhs(budget.hotelsLow)}–${formatLakhs(budget.hotelsHigh)}`;
+        experienceBudget.textContent = `${formatLakhs(budget.expLow)}–${formatLakhs(budget.expHigh)}`;
+
+
+        const cap = getBudgetCap();
+        const capNote = document.getElementById('capNote');
+        if (capNote) {
+          if (!cap) {
+            capNote.textContent = 'No hard budget asked first. The estimate is derived from the experience tier.';
+            capNote.classList.add('ok');
+          } else if (budget.high * 100000 > cap) {
+            capNote.textContent = `Estimate exceeds soft cap ${formatINRLakh(cap)}. Keep the core memory, then reduce hotel tier or trip length.`;
+            capNote.classList.remove('ok');
+          } else {
+            capNote.textContent = `Estimate fits within soft cap ${formatINRLakh(cap)}.`;
+            capNote.classList.add('ok');
+          }
+        }
+
+        summary.textContent = `For ${budget.destinationName}, this combines flight seed ranges, stay database ranges, local spend, and a tier-based buffer. Confidence improves as route, carrier, stay tier, and booking-window data become more specific.`;
+
+        setDynamicBar('flightBar', budget.flightsLow, budget.flightsHigh, 4.8, 'var(--sky)');
+        setDynamicBar('hotelBar', budget.hotelsLow, budget.hotelsHigh, 5.8, 'var(--lav)');
+        setDynamicBar('experienceBar', budget.expLow, budget.expHigh, 2.8, 'var(--peach)');
+
+        reasons.innerHTML = budget.reasons.map((reason) => (
+          `<span class="budget-reason ${reason.type}">${reason.text}</span>`
+        )).join('');
+
+        if (breakdownList) {
+          breakdownList.innerHTML = [
+            { domain: 'domain-route', label: 'Flights', amount: `${formatLakhs(budget.flightsLow)}–${formatLakhs(budget.flightsHigh)}`, detail: `${budget.flightEstimate.selectedOptionLabel}: ${budget.flightEstimate.routeShape}. Carrier set: ${budget.flightEstimate.carriers.map((id) => plannerData.flightCatalog.carriers[id]?.name || id).join(', ')}.` },
+            { domain: 'domain-stay', label: 'Hotels / stays', amount: `${formatLakhs(budget.hotelsLow)}–${formatLakhs(budget.hotelsHigh)}`, detail: `${budget.stayEstimate.selectedOptionLabel}: ${budget.stayEstimate.countries}, ${budget.stayEstimate.nights} nights, ${budget.stayEstimate.confidence} confidence.` },
+            { domain: 'domain-honeymoon', label: 'Food, transfers, experiences', amount: `${formatLakhs(budget.expLow)}–${formatLakhs(budget.expHigh)}`, detail: 'Local movement, meals, light experiences, baby-friendly pacing, and small upgrades.' },
+            { domain: 'domain-risk', label: 'Planning buffer', amount: `${formatLakhs(budget.bufferLow)}–${formatLakhs(budget.bufferHigh)}`, detail: 'Tier-based safety margin for fare movement, forex, baggage, infant needs, and missed estimates.' }
+          ].map((row) => `
+            <div class="breakdown-row ${row.domain}">
+              <div><strong>${row.label}</strong><span>${row.detail}</span></div>
+              <div class="breakdown-amount">${row.amount}</div>
+            </div>
+          `).join('');
+        }
+
+        if (flightDataNote) {
+          flightDataNote.innerHTML = `Flight database v1: carrier-specific seed fares, layover count, duration range, infant comfort proxy, and estimate-risk are now used. Next flight refinement: live quote capture, month fare curves, baggage/seat add-ons, and booking-window confidence. <span class="confidence-pill domain-confidence ${confidenceLevel(budget.flightEstimate.confidence)}">Current flight confidence: ${budget.flightEstimate.confidence}</span><span class="confidence-pill domain-risk ${riskLevel(budget.flightEstimate.risk)}">Risk: ${budget.flightEstimate.risk}</span>`;
+        }
+
+        if (flightOptionList) {
+          const options = (budget.flightEstimate.options || []).slice(0, 3);
+          flightOptionList.innerHTML = options.map((option) => {
+            const carrierNames = (option.carrierIds || []).map((id) => plannerData.flightCatalog.carriers[id]?.name || id).join(' + ');
+            return `
+              <div class="flight-option-row">
+                <strong>${option.label}<small>${formatLakhs(option.costL[0])}–${formatLakhs(option.costL[1])}</small></strong>
+                <span>${option.routeShape}</span>
+                <span>${option.bestFor}</span>
+                <div class="flight-option-meta">
+                  <em class="domain-route">${carrierNames}</em>
+                  <em class="domain-route">${option.durationHours[0]}–${option.durationHours[1]} hrs</em>
+                  <em class="domain-route">${option.layovers[0]}–${option.layovers[1]} layover(s)</em>
+                  <em class="domain-confidence ${confidenceLevel(option.estimateConfidence)}">Confidence ${option.estimateConfidence}%</em>
+                  <em class="domain-risk ${riskLevel(option.overUnderRisk)}">${option.overUnderRisk} estimate risk</em>
+                </div>
+              </div>
+            `;
+          }).join('');
+        }
+      }
+
+
+
+      function getPrimaryRecommendation() {
+        return getRankedRecommendations()[0] || Object.values(plannerData.destinations)[0];
+      }
+
+      function isPlannerReady() {
+        const choices = getChoices();
+        const vars = getVariables();
+        return Boolean(vars.start && vars.end && choices.experienceTier && choices.destinationMode);
+      }
+
+      function renderPlannerGate() {
+        const ids = ['generatedStory', 'generatedPlan', 'generatedStays', 'generatedReady'];
+        ids.forEach((id) => {
+          const el = document.getElementById(id);
+          if (el) el.innerHTML = '';
+        });
+        const recommendationStack = document.getElementById('recommendationStack');
+        if (recommendationStack) recommendationStack.innerHTML = '';
+        const destinationBoard = document.getElementById('destinationBoard');
+        if (destinationBoard) destinationBoard.innerHTML = '';
+        const scenarioPlanB = document.getElementById('scenarioPlanB');
+        if (scenarioPlanB) { scenarioPlanB.hidden = true; scenarioPlanB.innerHTML = ''; }
+        const budgetBreakdownList = document.getElementById('budgetBreakdownList');
+        if (budgetBreakdownList) budgetBreakdownList.innerHTML = '';
+        const flightOptionList = document.getElementById('flightOptionList');
+        if (flightOptionList) flightOptionList.innerHTML = '';
+        const checkpoint = document.getElementById('generatedDecisionCheckpoint');
+        if (checkpoint) {
+          checkpoint.innerHTML = '<h3>Decision checkpoint</h3><p>Select dates, experience tier, and destination direction in Plan first.</p>';
+        }
+      }
+
+      function renderDerivedTabs() {
+        if (!isPlannerReady()) {
+          renderPlannerGate();
+          return;
+        }
+        const state = getPlannerState();
+        const recommendations = getRankedRecommendations();
+        const primary = recommendations[0] || Object.values(plannerData.destinations)[0];
+        const budget = primary.calculatedBudget || estimateDestinationBudget(primary, state);
+        const budgetText = `${formatLakhs(budget[0])}–${formatLakhs(budget[1])}`;
+        const score = primary.calculatedScore || scoreDestination(primary, state);
+        const fitTag = score >= 85 ? 'Excellent fit' : score >= 78 ? 'Strong option' : 'Conditional option';
+        const alternativeNames = recommendations.slice(1).map((item) => item.name).join(', ') || 'No close alternatives yet';
+
+        const story = document.getElementById('generatedStory');
+        if (story) {
+          story.innerHTML = `
+            <article class="card span-8 card-domain-story card-emphasis-primary card-density-comfort">
+              <h3>${primary.name}: ${primary.tagline}</h3>
+              <p>The planner currently favours ${primary.name} for ${state.month}, ${state.tier.label} tier, and a ${state.tripDays}-day trip. The story is not a fixed UAE + Bali narrative anymore; it is generated around the destination that best balances baby comfort, travel fatigue, month fit, visa ease, honeymoon value, and budget fit.</p>
+              <div class="tag-row">${domainTag('confidence', `${score}% fit`, score >= 80 ? '' : 'medium')}${domainTag('budget', budgetText)}${domainTag('admin', primary.visa)}${domainTag('risk', fitTag, score >= 80 ? '' : 'medium')}</div>
+            </article>
+            <article class="card span-4 card-domain-confidence card-density-comfort">
+              <h3>Why this direction</h3>
+              <p>${primary.reasons.slice(0, 2).join(' ')} Main watch-out: ${primary.warnings[0]}</p>
+            </article>
+            <article class="card span-12 flow-card card-domain-plan card-density-comfort">
+              <h3>Trip arc</h3>
+              <div class="timeline">
+                <div class="phase p-peach"><span>Start</span><b>Recover</b><small>Arrival buffer</small></div>
+                <div class="phase p-sage"><span>Early</span><b>Settle</b><small>Baby rhythm</small></div>
+                <div class="phase p-sky"><span>Middle</span><b>Signature moment</b><small>${primary.type}</small></div>
+                <div class="phase p-lav"><span>Core</span><b>Slow honeymoon</b><small>Comfort first</small></div>
+                <div class="phase p-amber"><span>End</span><b>Return buffer</b><small>No hard landing</small></div>
+              </div>
+            </article>
+          `;
+        }
+
+        const plan = document.getElementById('generatedPlan');
+        if (plan) {
+          const suggestedBases = primary.suggestedBases || ['One arrival base', 'One honeymoon base'];
+          plan.innerHTML = `
+            <article class="card span-6 card-domain-baby card-density-comfort"><h3>Generated rhythm</h3><p>${state.tripDays} days should be planned as recovery → slow exploration → signature memory → buffer. Keep the plan at one primary outing per day.</p><div class="tag-row">${domainTag('baby', 'Baby pacing')}${domainTag('risk', 'Low switching')}</div></article>
+            <article class="card span-6 card-domain-risk card-density-comfort"><h3>${primary.name} rule</h3><p>${primary.warnings[0]} So the itinerary should prefer hotel/resort comfort over long day tours.</p><div class="tag-row">${domainTag('stay', 'Generated')}${domainTag('route', `${primary.travelHours[0]}–${primary.travelHours[1]} hrs`)}</div></article>
+            ${suggestedBases.map((base, index) => `<article class="card span-4 card-domain-stay card-density-comfort"><h3>Base ${index + 1}</h3><p>${base}. Keep transfers short and leave empty space around travel days.</p></article>`).join('')}
+          `;
+        }
+
+        const stays = document.getElementById('generatedStays');
+        if (stays) {
+          const stayEstimate = getStayEstimateFor(primary.id);
+          const topStays = (stayEstimate.options || []).slice(0, 5);
+          const stayBias = state.tier.label === 'Premium'
+            ? 'Premium tier should prioritize room category, view/private pool, transfer ease, and service certainty.'
+            : state.tier.label === 'High Quality'
+              ? 'High Quality tier should prioritize stronger locations, reliable service, and fewer compromises on arrival/departure days.'
+              : state.tier.label === 'Comfort'
+                ? 'Comfort tier should prioritize sleep quality, room size, baby logistics, cancellation flexibility, and convenient food.'
+                : 'Keep stay choices simple and value-led, but do not cut basics like AC, location, and cancellation flexibility.';
+
+          stays.innerHTML = `
+            <article class="card span-8 stay-db-summary card-domain-stay card-emphasis-primary card-density-comfort">
+              <h3>${primary.name} stay database match</h3>
+              <p>Selected stay seed: <strong>${stayEstimate.selectedOptionLabel}</strong>. Estimated stay range is <strong>${formatLakhs(stayEstimate.rangeL[0])}–${formatLakhs(stayEstimate.rangeL[1])}</strong> for ${stayEstimate.nights} nights before final live hotel validation. ${stayBias}</p>
+              <div class="tag-row">${domainTag('confidence', `${stayEstimate.confidence} confidence`, confidenceLevel(stayEstimate.confidence))}${domainTag('route', stayEstimate.countries)}${domainTag('stay', `${state.tier.label} tier`)}${domainTag('risk', `${stayEstimate.estimateRisk} estimate risk`, riskLevel(stayEstimate.estimateRisk))}</div>
+            </article>
+            <article class="card span-4 card-domain-baby card-density-comfort">
+              <h3>Stay rules</h3>
+              <p>Use fewer bases, short transfers, lift/elevator access, reliable AC, breakfast or room service, nearby food, and flexible cancellation. Upgrade only where the stay improves sleep, location, transfer ease, or the main honeymoon memory.</p>
+            </article>
+            <article class="card span-12 card-domain-stay card-density-comfort">
+              <h3>Comfort + premium stay options</h3>
+              <p>Database v1 covers UAE, Bali/Indonesia, Sri Lanka, Vietnam, Thailand, and Italy. These rows are planning seeds, not live quotes.</p>
+              <div class="stay-option-list">
+                ${topStays.map((option) => {
+                  const confidenceClass = option.confidence >= 75 ? '' : option.confidence >= 65 ? ' medium' : ' low';
+                  const riskClass = String(option.estimateRisk || '').toLowerCase().includes('high') ? 'risk-high' : String(option.estimateRisk || '').toLowerCase().includes('low') ? 'risk-low' : 'risk-medium';
+                  return `
+                  <div class="stay-option-row tier-${option.tier}">
+                    <strong>${option.label}<small>${formatLakhs(option.nightlyL[0])}–${formatLakhs(option.nightlyL[1])}/night</small></strong>
+                    <p>${option.bestFor}</p>
+                    <div class="stay-option-meta">
+                      <em class="domain-pill domain-country">${option.countryLabel}</em>
+                      <em class="domain-pill domain-tier">${option.tier}</em>
+                      <em class="domain-pill domain-nights">${option.suggestedNights[0]}–${option.suggestedNights[1]} nights</em>
+                      <em class="domain-pill domain-baby">Baby ${option.babyComfort}</em>
+                      <em class="domain-pill domain-honeymoon">Honeymoon ${option.honeymoonValue}</em>
+                      <em class="domain-pill domain-location">Location ${option.locationConvenience}</em>
+                      <em class="domain-pill domain-confidence${confidenceClass}">Confidence ${option.confidence}%</em>
+                    </div>
+                    <span class="stay-badge ${riskClass}">Watch-out: ${option.watchOut}</span>
+                  </div>
+                  `;
+                }).join('')}
+              </div>
+            </article>
+          `;
+        }
+
+        const ready = document.getElementById('generatedReady');
+        if (ready) {
+          const visaProfile = getVisaProfileFor(primary.id);
+          const visaUrgency = visaProfile.adminComplexity < 60 ? 'High visa/admin effort. Do not lock non-refundable bookings until visa confidence is high.' : 'Visa path looks manageable, but infant passport and document completeness still gate the booking.';
+          const fatigueUrgency = primary.travelFatigue < 70 ? 'Route fatigue is a major risk. Prefer better timings, fewer layovers, and longer recovery buffers.' : 'Route fatigue is acceptable if transfers and hotel switches stay limited.';
+          const documentRows = visaProfile.documents.map((item) => `<div class="visa-doc-row">${domainPill('admin', 'Document')}<span>${item}</span></div>`).join('');
+          ready.innerHTML = `
+            <article class="card span-8 domain-card-admin card-domain-admin card-emphasis-primary card-density-comfort"><h3>${visaProfile.label} visa + documentation</h3><p>${visaProfile.visaType}. ${visaProfile.processingWindow}. ${visaProfile.bookingRule}</p><div class="tag-row">${domainTag('admin', `Admin score ${visaProfile.adminComplexity}`)}${domainTag('confidence', `Confidence ${visaProfile.confidence}%`, confidenceLevel(visaProfile.confidence))}${domainTag('risk', `${visaProfile.risk} risk`, riskLevel(visaProfile.risk))}</div></article>
+            <article class="card span-4 domain-card-baby card-domain-baby card-density-comfort"><h3>Infant gatekeeper</h3><p>${visaProfile.babyNote}</p><div class="tag-row">${domainTag('baby', 'Infant passport')}${domainTag('admin', 'Parent proof')}</div></article>
+            <article class="card span-12 domain-card-admin card-domain-admin card-density-comfort"><h3>Document checklist</h3><p>Use this as a planning checklist before non-refundable booking. Final requirements must be checked against current official rules.</p><div class="visa-doc-list">${documentRows}</div></article>
+            <article class="card span-6 domain-card-risk card-domain-risk card-density-comfort"><h3>Risk read</h3><p>${visaUrgency} ${fatigueUrgency}</p></article>
+            <article class="card span-6 domain-card-honeymoon card-domain-honeymoon card-density-comfort"><h3>Compare next</h3><p>Compare ${primary.name} against ${alternativeNames} before locking the direction.</p></article>
+            <article class="card span-4 domain-card-budget card-domain-budget card-density-comfort"><h3>Budget check</h3><p>Current estimate is ${budgetText}. If the soft cap warning appears, reduce trip length or stay tier before cutting comfort basics.</p></article>
+            <article class="card span-4 domain-card-confidence card-domain-confidence card-density-comfort"><h3>Booking confidence</h3><p>Confidence improves after live fare capture, shortlisted hotel quote validation, and visa/document confirmation.</p></article>
+            <article class="card span-4 domain-card-baby card-domain-baby card-density-comfort"><h3>Lock condition</h3><p>Lock only when destination, route, stay strategy, documents, and baby pacing all feel acceptable.</p></article>
+          `;
+        }
+
+        const decisionCheckpoint = document.getElementById('generatedDecisionCheckpoint');
+        if (decisionCheckpoint) {
+          const checkpoint = primary.checkpoint || {};
+          decisionCheckpoint.innerHTML = `
+            <h3>Decision checkpoint</h3>
+            <p>For ${primary.name}, review the plan ${checkpoint.trigger || 'after the first major travel step'}. If the baby rhythm is not stable, ${checkpoint.fallback || 'reduce bases and simplify the itinerary'}. Protect ${checkpoint.protect || 'sleep, recovery, and the core trip memory'}.</p>
+            <div class="tag-row">${domainTag('risk', primary.warnings[0] || 'Watch pacing')}${domainTag('baby', 'Baby-first fallback')}${domainTag('confidence', `${score}% fit`, score >= 80 ? '' : 'medium')}</div>
+          `;
+        }
+      }
+
+      function getDecisionSignals() {
+        const choices = getChoices();
+        return {
+          nonNegotiables: Array.isArray(choices.nonNegotiables) ? choices.nonNegotiables : [],
+          worries: Array.isArray(choices.worries) ? choices.worries : [],
+          worthUpgrading: Array.isArray(choices.worthUpgrading) ? choices.worthUpgrading : [],
+          skipSignals: Array.isArray(choices.skipSignals) ? choices.skipSignals : []
+        };
+      }
+
+      function optionLabels(groupName, values) {
+        const options = plannerData.uiOptions[groupName] || [];
+        return values.map((value) => options.find((item) => item.value === value)?.label || value);
+      }
+
+      function getSignalAdjustment(destination, state) {
+        const signals = state.signals || getDecisionSignals();
+        let adjustment = 0;
+        const notes = [];
+        const maxLayovers = destination.layovers?.[1] ?? 2;
+        const isSingle = destination.candidateType === 'single';
+        const isCloser = ['uae', 'sri_lanka', 'thailand', 'uae_sri_lanka', 'uae_thailand'].includes(destination.id);
+        const isLongHaul = ['uae_bali', 'bali', 'italy', 'italy_uae'].includes(destination.id);
+        const visaProfile = getVisaProfileFor(destination.id);
+
+        if (signals.nonNegotiables.includes('relaxed_mornings')) { adjustment += isSingle ? 3 : 1; notes.push('Relaxed mornings prefer simpler pacing.'); }
+        if (signals.nonNegotiables.includes('fewer_hotel_changes')) { adjustment += isSingle ? 5 : -3; notes.push('Fewer hotel changes reward simpler routes.'); }
+        if (signals.nonNegotiables.includes('strong_resort')) { adjustment += Math.round(((destination.honeymoonValue || 70) - 75) / 8); notes.push('Resort/villa quality changes fit.'); }
+        if (signals.nonNegotiables.includes('short_transfers')) { adjustment += maxLayovers <= 1 ? 3 : -3; notes.push('Short transfers affect routing fit.'); }
+        if (signals.nonNegotiables.includes('easy_food_access')) { adjustment += ['uae', 'thailand', 'uae_thailand', 'uae_bali'].includes(destination.id) ? 2 : 0; notes.push('Easy food access favours more service-rich bases.'); }
+        if (signals.nonNegotiables.includes('baby_sleep_priority')) { adjustment += (destination.babyComfort >= 84 ? 4 : -2); notes.push('Baby sleep priority raises comfort threshold.'); }
+
+        if (signals.worries.includes('long_flights')) { adjustment += isLongHaul ? -5 : 2; notes.push('Long-flight worry penalises long-haul options.'); }
+        if (signals.worries.includes('too_hot')) { adjustment += ['uae'].includes(destination.id) && ['Aug','Sep'].includes(state.month) ? -4 : 0; notes.push('Heat worry affects hot-weather options.'); }
+        if (signals.worries.includes('visa_delays')) { adjustment += (visaProfile.adminComplexity || 70) >= 78 ? 2 : -4; notes.push('Visa delay worry rewards easier documentation.'); }
+        if (signals.worries.includes('baby_sleep_disruption')) { adjustment += destination.babyComfort >= 84 ? 3 : -4; notes.push('Baby sleep disruption penalises tiring options.'); }
+        if (signals.worries.includes('too_many_bases')) { adjustment += isSingle ? 4 : -4; notes.push('Too many bases worry favours one-country plans.'); }
+        if (signals.worries.includes('budget_drift')) { adjustment += (destination.baseBudgetL?.[1] || 8) <= 7 ? 3 : -4; notes.push('Budget drift worry penalises high-ceiling options.'); }
+
+        if (signals.worthUpgrading.includes('direct_flights')) { adjustment += maxLayovers <= 1 ? 3 : -1; notes.push('Direct-flight upgrade rewards easier routing.'); }
+        if (signals.worthUpgrading.includes('better_location')) { adjustment += (destination.babyComfort + destination.honeymoonValue) / 2 >= 83 ? 2 : 0; notes.push('Better-location upgrade rewards strong stay bases.'); }
+        if (signals.worthUpgrading.includes('premium_resort')) { adjustment += destination.honeymoonValue >= 84 ? 3 : 0; notes.push('Premium-resort upgrade boosts honeymoon-heavy options.'); }
+        if (signals.worthUpgrading.includes('private_transfers')) { adjustment += isCloser ? 2 : 0; notes.push('Private transfers help closer routes more reliably.'); }
+        if (signals.worthUpgrading.includes('room_view')) { adjustment += destination.honeymoonValue >= 82 ? 2 : 0; notes.push('Room-view value tracks honeymoon strength.'); }
+        if (signals.worthUpgrading.includes('flexible_cancellation')) { adjustment += (destination.confidence || 70) < 74 ? 1 : 0; notes.push('Flexibility helps lower-confidence estimates.'); }
+
+        if (signals.skipSignals.includes('packed_sightseeing')) { adjustment += isSingle ? 2 : -1; notes.push('Skipping packed sightseeing favours slower routes.'); }
+        if (signals.skipSignals.includes('long_day_tours')) { adjustment += destination.babyComfort >= 82 ? 2 : -1; notes.push('Skipping long tours rewards baby-friendly bases.'); }
+        if (signals.skipSignals.includes('desert_safari')) { adjustment += destination.id === 'uae' ? -1 : 0; notes.push('Desert-safari skip slightly lowers UAE activity value.'); }
+        if (signals.skipSignals.includes('late_nights')) { adjustment += destination.babyComfort >= 84 ? 2 : -1; notes.push('Skipping late nights favours calmer stays.'); }
+        if (signals.skipSignals.includes('frequent_taxis')) { adjustment += maxLayovers <= 1 || isSingle ? 2 : -2; notes.push('Frequent taxi skip favours low-transfer bases.'); }
+
+        return { adjustment, notes };
+      }
+
+      function renderDecisionSignalSummary() {
+        const target = document.getElementById('decisionSignalSummary');
+        if (!target) return;
+        const signals = getDecisionSignals();
+        const total = Object.values(signals).reduce((sum, items) => sum + items.length, 0);
+        if (!total) {
+          target.innerHTML = '<strong>No decision signals yet.</strong> Tap a few chips to make recommendations more personal.';
+          return;
+        }
+        const parts = [
+          domainTag('baby', `Must: ${optionLabels('nonNegotiables', signals.nonNegotiables).join(', ') || 'none'}`),
+          domainTag('risk', `Worries: ${optionLabels('worries', signals.worries).join(', ') || 'none'}`),
+          domainTag('budget', `Upgrade: ${optionLabels('worthUpgrading', signals.worthUpgrading).join(', ') || 'none'}`),
+          domainTag('risk', `Skip: ${optionLabels('skipSignals', signals.skipSignals).join(', ') || 'none'}`)
+        ];
+        target.innerHTML = `<strong>Signal lens active:</strong> ${parts.join(' ')}`;
+      }
+
+      function getScenarioState() {
+        const choices = getChoices();
+        return {
+          alternateMonths: Array.isArray(choices.alternateMonths) ? choices.alternateMonths : [],
+          backupDestinations: Array.isArray(choices.backupDestinations) ? choices.backupDestinations : [],
+          fallbackStrategy: choices.fallbackStrategy || ''
+        };
+      }
+
+      function candidateMatchesScenarioBackup(destination, scenario) {
+        if (!scenario.backupDestinations.length) return false;
+        const id = destination.id;
+        const countries = destination.countries || [id];
+        return scenario.backupDestinations.some((backup) => backup === id || countries.includes(backup));
+      }
+
+      function getScenarioAdjustment(destination, state) {
+        const scenario = state.scenario || getScenarioState();
+        let adjustment = 0;
+        const notes = [];
+
+        if (candidateMatchesScenarioBackup(destination, scenario)) {
+          adjustment += 5;
+          notes.push('Boosted because it is selected as a backup scenario.');
+        }
+
+        if (scenario.fallbackStrategy === 'single_country_if_fatigue_high') {
+          if (destination.candidateType === 'single') { adjustment += 4; notes.push('Single-country fallback improves baby-fatigue resilience.'); }
+          else { adjustment -= 3; notes.push('Two-country route is penalised under high-fatigue fallback.'); }
+        }
+
+        if (scenario.fallbackStrategy === 'closer_resort_over_longhaul') {
+          if (['uae', 'sri_lanka', 'thailand', 'uae_sri_lanka', 'uae_thailand'].includes(destination.id)) { adjustment += 4; notes.push('Closer/resort-led fallback supports this option.'); }
+          if (['uae_bali', 'italy', 'italy_uae'].includes(destination.id)) { adjustment -= 3; notes.push('Long-haul or high-complexity route is softened by this fallback.'); }
+        }
+
+        if (scenario.fallbackStrategy === 'reduce_transfers_first') {
+          const maxLayovers = destination.layovers?.[1] ?? 2;
+          if (maxLayovers <= 1 || destination.candidateType === 'single') { adjustment += 3; notes.push('Lower-transfer profile fits the fallback strategy.'); }
+          if (maxLayovers >= 3) { adjustment -= 5; notes.push('Transfer-heavy route is penalised by the fallback strategy.'); }
+        }
+
+        if (scenario.fallbackStrategy === 'protect_premium_stay_quality') {
+          adjustment += Math.round(((destination.honeymoonValue || 70) - 75) / 10);
+          notes.push('Stay/honeymoon quality influences scenario score.');
+        }
+
+        return { adjustment, notes };
+      }
+
+      function renderScenarioSummary() {
+        const targets = ['decisionScenarioSummary']
+          .map((id) => document.getElementById(id))
+          .filter(Boolean);
+        if (!targets.length) return;
+        const scenario = getScenarioState();
+        const months = scenario.alternateMonths.length ? scenario.alternateMonths.join(', ') : 'none selected';
+        const backups = scenario.backupDestinations.length
+          ? scenario.backupDestinations.map((id) => {
+              const option = plannerData.uiOptions.backupDestinations.find((item) => item.value === id);
+              return option ? option.label : id;
+            }).join(', ')
+          : 'none selected';
+        const fallback = plannerData.uiOptions.fallbackStrategy.find((item) => item.value === scenario.fallbackStrategy)?.label || 'none selected';
+        const summary = `Plan B inputs: ${domainTag('planner', `Months: ${months}`)} ${domainTag('route', `Backups: ${backups}`)} ${domainTag('risk', `Fallback: ${fallback}`)}`;
+        targets.forEach((target) => { target.innerHTML = summary; });
+      }
+
+      function renderScenarioPlanB() {
+        const target = document.getElementById('scenarioPlanB');
+        if (!target) return;
+        const state = getPlannerState();
+        const scenario = state.scenario;
+        const hasScenario = scenario.alternateMonths.length || scenario.backupDestinations.length || scenario.fallbackStrategy;
+        if (!hasScenario) {
+          target.hidden = true;
+          target.innerHTML = '';
+          return;
+        }
+        const currentTop = getRankedRecommendations()[0];
+        const backupPool = getAllRecommendationCandidates(state)
+          .filter((candidate) => candidate.id !== currentTop?.id)
+          .map((candidate) => ({
+            ...candidate,
+            calculatedScore: scoreDestination(candidate, state),
+            calculatedBudget: estimateDestinationBudget(candidate, state)
+          }))
+          .filter((candidate) => candidateMatchesScenarioBackup(candidate, scenario) || candidate.calculatedScore >= 78)
+          .sort((a, b) => b.calculatedScore - a.calculatedScore)
+          .slice(0, 2);
+        const backupText = backupPool.length ? backupPool.map((item) => `${item.name} (${item.calculatedScore}% fit)`).join(' · ') : 'No strong backup yet — add backup destinations or relax fallback constraints.';
+        target.hidden = false;
+        target.innerHTML = `<strong>Scenario lens active:</strong> ${backupText}`;
+      }
+
+      function getPlannerState() {
+        const choices = getChoices();
+        const variables = getVariables();
+        return {
+          variables,
+          choices,
+          month: variables.month || getMonthFromDate(variables.start),
+          destinationMode: choices.destinationMode || plannerData.uiOptions.destinationModes[0].value,
+          tier: getSelectedTier(),
+          tripDays: getTripDays(),
+          budgetCap: getBudgetCap(),
+          scenario: getScenarioState(),
+          signals: getDecisionSignals()
+        };
+      }
+
+      function scoreDestination(destination, state) {
+        const weights = plannerData.scoringRules.weights;
+        const monthFit = destination.monthFit[state.month] || 60;
+        const directionBonus = (destination.directionMatches || []).includes(state.destinationMode) ? 8 : 0;
+        const budget = destination.baseBudgetL;
+        const capL = state.budgetCap ? state.budgetCap / 100000 : null;
+        const tierMultiplier = state.tier.multipliers.stay;
+        const estimatedHigh = budget[1] * ((tierMultiplier + state.tier.multipliers.flight + state.tier.multipliers.local) / 3);
+        const budgetFit = capL && estimatedHigh > capL ? Math.max(45, 100 - ((estimatedHigh - capL) * 12)) : 82;
+
+        const visaProfile = getVisaProfileFor(destination.id);
+        const scenarioAdjustment = getScenarioAdjustment(destination, state);
+        const signalAdjustment = getSignalAdjustment(destination, state);
+        const adminScore = visaProfile.adminComplexity || destination.visaEase || 70;
+        const adminConfidenceAdjustment = Math.max(-4, Math.min(3, (adminScore - 70) / 8));
+        const weightedScore =
+          destination.babyComfort * weights.babyComfort +
+          monthFit * weights.monthFit +
+          budgetFit * weights.budgetFit +
+          destination.travelFatigue * weights.travelFatigue +
+          destination.honeymoonValue * weights.honeymoonValue +
+          destination.visaEase * weights.visaEase +
+          directionBonus +
+          adminConfidenceAdjustment +
+          scenarioAdjustment.adjustment +
+          signalAdjustment.adjustment -
+          (destination.feasibility?.penalty || 0);
+
+        return Math.round(Math.max(45, Math.min(96, weightedScore)));
+      }
+
+      function estimateDestinationBudget(destination, state) {
+        const avgMultiplier = (state.tier.multipliers.flight + state.tier.multipliers.stay + state.tier.multipliers.local) / 3;
+        const durationMultiplier = Math.max(0.82, Math.min(1.22, state.tripDays / 17));
+        return [destination.baseBudgetL[0] * avgMultiplier * durationMultiplier, destination.baseBudgetL[1] * avgMultiplier * durationMultiplier];
+      }
+
+      function getRankedRecommendations() {
+        const state = getPlannerState();
+        return getAllRecommendationCandidates(state)
+          .filter((destination) => destination.monthFit[state.month])
+          .map((destination) => ({
+            ...destination,
+            calculatedScore: scoreDestination(destination, state),
+            calculatedBudget: estimateDestinationBudget(destination, state)
+          }))
+          .sort((a, b) => b.calculatedScore - a.calculatedScore)
+          .slice(0, 4);
+      }
+
+      function renderRecommendations() {
+        const stack = document.getElementById('recommendationStack');
+        const context = document.getElementById('recommendationContext');
+        if (!stack || !context) return;
+
+        if (!isPlannerReady()) {
+          context.textContent = 'Select experience tier and destination direction to generate recommendations.';
+          stack.innerHTML = '<article class="recommendation-card card-domain-planner card-density-comfort"><div class="recommendation-head"><h4>Planner waiting for inputs</h4></div><div class="recommendation-tagline">Choose an experience tier and destination direction above. Other tabs will stay empty until this is done.</div></article>';
+          return;
+        }
+
+        const state = getPlannerState();
+        const recommendations = getRankedRecommendations();
+        const scenarioActive = state.scenario.alternateMonths.length || state.scenario.backupDestinations.length || state.scenario.fallbackStrategy;
+        context.textContent = `Based on ${state.month}, ${state.tier.label} tier, ${state.destinationMode}, ${state.tripDays} days, baby comfort, travel fatigue, honeymoon value, visa ease, budget fit${scenarioActive ? ', and active Plan B scenario inputs' : ''}.`;
+
+        stack.innerHTML = recommendations.map((destination) => {
+          const medium = destination.calculatedScore < 80 ? ' medium' : '';
+          const budget = `${formatLakhs(destination.calculatedBudget[0])}–${formatLakhs(destination.calculatedBudget[1])}`;
+          const reasons = destination.reasons.map((item) => `<li>${item}</li>`).join('');
+          const warnings = destination.warnings.map((item) => `<li>${item}</li>`).join('');
+          return `
+            <article class="recommendation-card card-domain-honeymoon card-density-comfort" data-rec-id="${destination.id}">
+              <div class="recommendation-head">
+                <h4>${destination.name}</h4>
+                <span class="fit-badge${medium}">${destination.calculatedScore}% fit</span>
+              </div>
+              <div class="recommendation-tagline">${destination.tagline}</div>
+
+              <div class="reason-grid">
+                <div class="reason-block">
+                  <strong>Why it works</strong>
+                  <ul>${reasons}</ul>
+                </div>
+                <div class="reason-block">
+                  <strong>Watch-outs</strong>
+                  <ul>${warnings}</ul>
+                </div>
+              </div>
+
+              <div class="recommendation-meta">
+                <div class="meta-pill domain-budget">${budget}<span>${state.tier.label.toLowerCase()} estimate</span></div>
+                <div class="meta-pill domain-route">${destination.travelHours[0]}–${destination.travelHours[1]} hrs<span>${destination.layovers[0]}–${destination.layovers[1]} layover(s), ${destination.visa}</span></div>
+                ${destination.candidateType === 'combination' ? `<div class="meta-pill domain-confidence">Combo feasible<span>${(destination.roles || []).join(' + ')}</span></div>` : ''}
+                ${candidateMatchesScenarioBackup(destination, state.scenario) ? `<div class="meta-pill domain-risk">Plan B candidate<span>Selected in scenario exploration</span></div>` : ''}
+              </div>
+
+              <div class="recommendation-actions">
+                <button class="btn btn-primary rec-btn" type="button" data-action="shortlist" data-destination="${destination.name}">Shortlist</button>
+                <button class="btn btn-secondary rec-btn secondary" type="button" data-action="compare" data-destination="${destination.name}">Compare</button>
+              </div>
+            </article>
+          `;
+        }).join('');
+      }
+
+      function buildSummary() {
+        const notes = collectNotes();
+        const choices = getChoices();
+        const vars = getVariables();
+        return [
+          'Trip discussion notes',
+          '',
+          'Dates:', `${formatReadableDate(vars.start)} – ${formatReadableDate(vars.end)}`,
+          '',
+          'Destination direction:', choices.destinationMode || plannerData.uiOptions.destinationModes[0].value,
+          '',
+          'Experience tier:', getSelectedTier().label,
+          '',
+          'Soft cap:', getBudgetCap() ? formatINRLakh(getBudgetCap()) : '-',
+          '',
+          'Overall feeling:', choices.overallFeeling || '-',
+          '',
+          'Preference markers:', Array.isArray(choices.preferenceMarkers) && choices.preferenceMarkers.length ? choices.preferenceMarkers.join(', ') : '-',
+          '',
+          'Scenario alternate months:', Array.isArray(choices.alternateMonths) && choices.alternateMonths.length ? choices.alternateMonths.join(', ') : '-',
+          '',
+          'Scenario backup destinations:', Array.isArray(choices.backupDestinations) && choices.backupDestinations.length ? choices.backupDestinations.join(', ') : '-',
+          '',
+          'Scenario fallback strategy:', choices.fallbackStrategy || '-',
+          '',
+          'Non-negotiables:', optionLabels('nonNegotiables', getDecisionSignals().nonNegotiables).join(', ') || '-',
+          '',
+          'Worries:', optionLabels('worries', getDecisionSignals().worries).join(', ') || '-',
+          '',
+          'Worth upgrading:', optionLabels('worthUpgrading', getDecisionSignals().worthUpgrading).join(', ') || '-',
+          '',
+          'Skip signals:', optionLabels('skipSignals', getDecisionSignals().skipSignals).join(', ') || '-',
+          '',
+          'Extra note:', notes.extraNotes || '-'
+        ].join('\n');
+      }
+
+      let activePlanStep = null;
+
+      function getPlanStepStatus() {
+        const choices = getChoices();
+        const vars = getVariables();
+        const datesReady = Boolean(vars.start && vars.end && getTripDays() > 0);
+        const experienceReady = Boolean(choices.experienceTier);
+        const directionReady = Boolean(choices.destinationMode);
+        return { datesReady, experienceReady, directionReady, plannerReady: datesReady && experienceReady && directionReady };
+      }
+
+      function getNextPlanStep(status) {
+        if (!status.datesReady) return 'dates';
+        if (!status.experienceReady) return 'experience';
+        if (!status.directionReady) return 'direction';
+        return activePlanStep || 'story';
+      }
+
+      function renderPlanMonthStrip() {
+        const strip = document.getElementById('planMonthStrip');
+        if (!strip) return;
+        const vars = getVariables();
+        const selectedMonth = vars.month || getMonthFromDate(vars.start);
+        const months = Object.keys(destinationDatabase);
+        strip.innerHTML = months.map((month) => (
+          `<button class="month-chip ${month === selectedMonth ? 'active selected' : ''}" type="button" data-plan-month="${month}">${month}</button>`
+        )).join('');
+      }
+
+      function renderPlanBuilder() {
+        const status = getPlanStepStatus();
+        const choices = getChoices();
+        const vars = getVariables();
+        const tier = choices.experienceTier ? getSelectedTier() : null;
+        const month = vars.month || getMonthFromDate(vars.start);
+        const cap = getBudgetCap();
+        const active = getNextPlanStep(status);
+
+        const crumbs = document.getElementById('planBreadcrumbs');
+        if (crumbs) {
+          crumbs.innerHTML = [
+            { ok: status.datesReady, text: status.datesReady ? `${formatReadableDate(vars.start)} – ${formatReadableDate(vars.end)} · ${getTripDays()} days` : 'Dates pending' },
+            { ok: status.experienceReady, text: status.experienceReady ? `${tier.label}${cap ? ` · soft cap ${formatINRLakh(cap)}` : ''}` : 'Experience pending' },
+            { ok: status.directionReady, text: status.directionReady ? `${choices.destinationMode} · ${month}` : 'Direction pending' }
+          ].map((item) => `<span class="plan-crumb ${item.ok ? 'complete' : ''}">${item.text}</span>`).join('');
+        }
+
+        const dateSummary = document.getElementById('datesStepSummary');
+        if (dateSummary) dateSummary.textContent = status.datesReady ? `${formatReadableDate(vars.start)} – ${formatReadableDate(vars.end)} (${getTripDays()} days)` : 'Choose the trip start and end dates.';
+        const experienceSummary = document.getElementById('experienceStepSummary');
+        if (experienceSummary) experienceSummary.textContent = status.experienceReady ? `${tier.label} tier${cap ? ` with ${formatINRLakh(cap)} soft cap` : ''}` : 'Pick the comfort level. Soft cap stays optional.';
+        const directionSummary = document.getElementById('directionStepSummary');
+        if (directionSummary) directionSummary.textContent = status.directionReady ? `${choices.destinationMode} · ${month}` : 'Choose destination direction and planning month.';
+        const storySummary = document.getElementById('storyStepSummary');
+        if (storySummary) storySummary.textContent = status.plannerReady ? 'Your generated trip arc is unlocked below.' : 'Complete steps 1–3 to generate the trip arc.';
+
+        document.querySelectorAll('.plan-step').forEach((step) => {
+          const name = step.dataset.planStep;
+          const complete = (name === 'dates' && status.datesReady) || (name === 'experience' && status.experienceReady) || (name === 'direction' && status.directionReady) || (name === 'story' && status.plannerReady);
+          step.classList.toggle('complete', complete);
+          step.classList.toggle('active', name === active);
+          const state = step.querySelector('.step-state');
+          if (state) state.textContent = name === active ? (complete ? 'Review' : 'Active') : (complete ? 'Done' : 'Pending');
+        });
+
+        renderPlanMonthStrip();
+      }
+
+      document.addEventListener('click', (event) => {
+        const edit = event.target.closest('[data-plan-edit]');
+        if (edit) {
+          activePlanStep = edit.dataset.planEdit;
+          renderPlanBuilder();
+        }
+        const monthButton = event.target.closest('[data-plan-month]');
+        if (monthButton) {
+          const varsNow = getVariables();
+          varsNow.month = monthButton.dataset.planMonth;
+          writeJSON(variableKey, varsNow);
+          activePlanStep = 'direction';
+          setSaveState('Saved');
+          renderAll();
+        }
+      });
+
+      function renderAll() {
+        const plannerReady = isPlannerReady();
+        document.body.classList.toggle('planner-ready', plannerReady);
+        document.body.classList.toggle('planner-not-ready', !plannerReady);
+        renderChoiceGroups();
+        hydrateChoices();
+        renderVariableSummary();
+        renderPlanBuilder();
+        renderPlannerIntelligence();
+        if (plannerReady) {
+          renderMonthExplorer();
+          renderDynamicBudget();
+          renderScenarioSummary();
+          renderRecommendations();
+          renderScenarioPlanB();
+        } else {
+          renderPlannerGate();
+        }
+        renderDerivedTabs();
+        const state = getPlannerState();
+        const primary = isPlannerReady() ? getPrimaryRecommendation() : null;
+        document.title = primary ? `${state.month} Family Honeymoon Planner · ${primary.name}` : 'Family Honeymoon Planner';
+      }
+
+      auditPlannerDataShape();
+      hydrateNotes(readJSON(notesKey));
+      hydrateVariables();
+      hydrateBudgetCap();
+      renderChoiceGroups();
+      normaliseLegacyChoiceState();
+      bindChoices();
+      renderAll();
+
+      noteFields.forEach((id) => {
+        const field = document.getElementById(id);
+        if (!field) return;
+        field.addEventListener('input', () => {
+          writeJSON(notesKey, collectNotes());
+          setSaveState('Saved');
+        });
+      });
+
+      const copyButton = document.getElementById('copyNotes');
+      const exportButton = document.getElementById('exportNotes');
+      const importInput = document.getElementById('importNotes');
+      const clearButton = document.getElementById('clearNotes');
+
+      if (copyButton) {
+        copyButton.addEventListener('click', async () => {
+          try {
+            await navigator.clipboard.writeText(buildSummary());
+            setSaveState('Copied summary');
+          } catch (error) {
+            const temp = document.createElement('textarea');
+            temp.value = buildSummary();
+            document.body.appendChild(temp);
+            temp.select();
+            document.execCommand('copy');
+            temp.remove();
+            setSaveState('Copied summary');
+          }
+        });
+      }
+
+      if (exportButton) {
+        exportButton.addEventListener('click', () => {
+          const payload = {
+            exportedAt: new Date().toISOString(),
+            trip: document.title,
+            notes: collectNotes(),
+            choices: getChoices(),
+            variables: getVariables(),
+            budgetCapINR: getBudgetCap()
+          };
+          const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = 'august-family-honeymoon-notes.json';
+          document.body.appendChild(link);
+          link.click();
+          link.remove();
+          URL.revokeObjectURL(url);
+          setSaveState('Exported');
+        });
+      }
+
+      if (importInput) {
+        importInput.addEventListener('change', async () => {
+          const file = importInput.files && importInput.files[0];
+          if (!file) return;
+          try {
+            const data = JSON.parse(await file.text());
+            if (data.notes) {
+              writeJSON(notesKey, data.notes);
+              hydrateNotes(data.notes);
+            }
+            if (data.choices) writeJSON(choiceKey, data.choices);
+            if (data.variables) writeJSON(variableKey, data.variables);
+            if (data.budgetCapINR) storage.setItem(capKey, String(data.budgetCapINR));
+            renderAll();
+            setSaveState('Imported');
+          } catch (error) {
+            setSaveState('Import failed');
+          } finally {
+            importInput.value = '';
+          }
+        });
+      }
+
+      if (clearButton) {
+        clearButton.addEventListener('click', () => {
+          storage.removeItem(notesKey);
+          storage.removeItem(choiceKey);
+          storage.removeItem(variableKey);
+          storage.removeItem(capKey);
+          hydrateNotes({});
+          renderAll();
+          setSaveState('Cleared');
+        });
+      }
+
+      const shortlistKey = plannerStorage.keys.shortlist;
+
+      function readShortlist() {
+        try { return JSON.parse(storage.getItem(shortlistKey)) || []; }
+        catch (error) { return []; }
+      }
+
+      function writeShortlist(items) {
+        storage.setItem(shortlistKey, JSON.stringify(items));
+      }
+
+      function renderShortlist() {
+        const strip = document.getElementById('shortlistStrip');
+        if (!strip) return;
+        const items = readShortlist();
+        strip.innerHTML = items.length
+          ? items.map((item) => `<span class="shortlist-chip">${item}</span>`).join('')
+          : '<span class="shortlist-chip">Shortlist will appear here</span>';
+      }
+
+      function renderComparePanel(destinationName) {
+        const panel = document.getElementById('comparePanel');
+        if (!panel) return;
+        const state = getPlannerState();
+        const items = getRankedRecommendations();
+        const selected = items.find((item) => item.name === destinationName) || items[0];
+        if (!selected) return;
+        const budget = selected.calculatedBudget || estimateDestinationBudget(selected, state);
+        panel.style.display = 'block';
+        panel.innerHTML = `<strong>${selected.name} comparison snapshot</strong><br>
+          Score: ${selected.calculatedScore || scoreDestination(selected, state)}% · Budget: ${formatLakhs(budget[0])}–${formatLakhs(budget[1])} · Route: ${selected.travelHours[0]}–${selected.travelHours[1]} hrs · Visa: ${selected.visa}<br>
+          Best reason: ${selected.reasons[0]}<br>
+          Main trade-off: ${selected.warnings[0]}`;
+      }
+
+      const recommendationStackEl = document.getElementById('recommendationStack');
+      if (recommendationStackEl) {
+        recommendationStackEl.addEventListener('click', (event) => {
+          const button = event.target.closest('[data-action]');
+          if (!button) return;
+          const destination = button.dataset.destination;
+
+          if (button.dataset.action === 'shortlist') {
+            const current = readShortlist();
+            const next = current.includes(destination)
+              ? current.filter((item) => item !== destination)
+              : [...current, destination];
+            writeShortlist(next);
+            renderShortlist();
+            if (typeof setSaveState === 'function') setSaveState(current.includes(destination) ? 'Removed from shortlist' : 'Shortlisted');
+          }
+
+          if (button.dataset.action === 'compare') {
+            renderComparePanel(destination);
+            if (typeof setSaveState === 'function') setSaveState(`${destination} comparison opened`);
+          }
+        });
+      }
+
+      renderShortlist();
+
+    });
+  
+
+    /* v36 Form/Input System behavior */
+    document.addEventListener('DOMContentLoaded', () => {
+      const controls = Array.from(document.querySelectorAll('.date-input, .cap-input, .notes-area'));
+
+      function ensureFeedback(afterEl, id) {
+        let feedback = document.getElementById(id);
+        if (!feedback) {
+          feedback = document.createElement('div');
+          feedback.id = id;
+          feedback.className = 'form-feedback is-info';
+          afterEl.insertAdjacentElement('afterend', feedback);
+        }
+        return feedback;
+      }
+
+      function setFeedback(el, type, message) {
+        if (!el) return;
+        el.className = `form-feedback is-visible is-${type}`;
+        el.textContent = message;
+      }
+
+      function clearFeedback(el) {
+        if (!el) return;
+        el.className = 'form-feedback';
+        el.textContent = '';
+      }
+
+      function setControlState(control, state) {
+        control.classList.toggle('is-filled', Boolean(control.value && control.value.trim ? control.value.trim() : control.value));
+        control.classList.toggle('is-valid', state === 'valid');
+        control.classList.toggle('is-invalid', state === 'invalid');
+      }
+
+      function validateDates() {
+        const start = document.getElementById('tripStart');
+        const end = document.getElementById('tripEnd');
+        if (!start || !end) return;
+        const dateRow = start.closest('.date-row') || end.parentElement;
+        const feedback = ensureFeedback(dateRow, 'dateFeedback');
+        const startValue = start.value ? new Date(start.value + 'T00:00:00') : null;
+        const endValue = end.value ? new Date(end.value + 'T00:00:00') : null;
+
+        if (!start.value || !end.value) {
+          setControlState(start, start.value ? 'valid' : null);
+          setControlState(end, end.value ? 'valid' : null);
+          setFeedback(feedback, 'warning', 'Add both dates so trip length, stays, and budget can be calculated.');
+          return;
+        }
+
+        const nights = Math.round((endValue - startValue) / 86400000);
+        if (nights < 0) {
+          setControlState(start, 'invalid');
+          setControlState(end, 'invalid');
+          setFeedback(feedback, 'error', 'End date must be after the start date.');
+          return;
+        }
+
+        setControlState(start, 'valid');
+        setControlState(end, 'valid');
+        setFeedback(feedback, 'success', `${nights + 1} days / ${nights} nights selected.`);
+      }
+
+      function validateBudgetCap() {
+        const cap = document.getElementById('budgetCap');
+        if (!cap) return;
+        const feedback = ensureFeedback(cap, 'budgetCapFeedback');
+        const value = Number(cap.value || 0);
+        if (!cap.value) {
+          setControlState(cap, null);
+          clearFeedback(feedback);
+          return;
+        }
+        if (!Number.isFinite(value) || value < 100000) {
+          setControlState(cap, 'invalid');
+          setFeedback(feedback, 'warning', 'Use a realistic soft cap in INR, or leave this blank and let the planner derive the envelope.');
+          return;
+        }
+        setControlState(cap, 'valid');
+        setFeedback(feedback, 'success', 'Soft cap saved as a constraint, not as the starting question.');
+      }
+
+      function updateTextareas() {
+        document.querySelectorAll('.notes-area').forEach((area) => {
+          setControlState(area, area.value.trim() ? 'valid' : null);
+        });
+      }
+
+      controls.forEach((control) => {
+        setControlState(control, null);
+        control.addEventListener('input', () => {
+          setControlState(control, null);
+          if (control.id === 'budgetCap') validateBudgetCap();
+          if (control.classList.contains('notes-area')) updateTextareas();
+        });
+        control.addEventListener('change', () => {
+          if (control.id === 'tripStart' || control.id === 'tripEnd') validateDates();
+          if (control.id === 'budgetCap') validateBudgetCap();
+        });
+      });
+
+      validateDates();
+      validateBudgetCap();
+      updateTextareas();
+    });
+
+  </script>
+  <script src="./app.js" defer></script>
+</body>
+</html>
