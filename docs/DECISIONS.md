@@ -142,3 +142,20 @@
 - `src/engine/budget.js` defines experience-tier budget multipliers and range formatting helpers.
 - `src/engine/recommendations.js` defines pure ranking helpers.
 - `src/engine/index.js` is the stable export boundary for future app wiring.
+
+## 2026-05-05 — Add non-wired PWA registration scaffold
+
+**Decision:** Add `src/pwa/registration.js` and `src/pwa/index.js` before replacing the root `app.js` boot guard.
+
+**Rationale:**
+
+- Service-worker registration is small and isolated, but it still affects live boot behavior once wired.
+- Keeping the scaffold non-wired preserves the current stable Pages baseline.
+- A module boundary lets future app wiring import PWA helpers from one stable path.
+
+**Consequences:**
+
+- The live root `app.js` continues to register `./sw.js` for now.
+- `src/pwa/registration.js` mirrors the current registration behavior as testable helper functions.
+- `src/pwa/index.js` is the stable export boundary for future PWA imports.
+- Future wiring must verify service-worker registration and cache behavior after deployment.
