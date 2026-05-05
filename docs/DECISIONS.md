@@ -91,3 +91,20 @@
 
 - The canonical app icon path is now `assets/icons/icon.svg`.
 - Root `icon.svg` should not be reintroduced unless a deployment platform requires it.
+
+## 2026-05-05 — Add non-wired state extraction scaffolds
+
+**Decision:** Add `src/state/storage.js` and `src/state/migration.js` before wiring modular source files into the live app.
+
+**Rationale:**
+
+- The live app should stay stable while extraction begins.
+- Storage is the safest first extraction boundary because it has a clear contract and no DOM dependency.
+- Migration helpers need to exist before any future move from `augustFamilyHoneymoon.*.v431` to `holidayPlanner.*.v1`.
+
+**Consequences:**
+
+- The live runtime remains inline in `index.html` for now.
+- `src/state/storage.js` mirrors the current production storage keys and safe localStorage wrapper.
+- `src/state/migration.js` previews and copies current state into future `holidayPlanner.*.v1` keys, but does not run automatically.
+- Future wiring must include a parity check before replacing inline storage helpers.
