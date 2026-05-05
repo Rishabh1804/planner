@@ -1,145 +1,175 @@
-# CLAUDE.md — Holiday Planner
+# CLAUDE.md — Planner
 
-**Companion:** Aurelius (The Chronicler) — constitutional steward and decision recorder for this repo until a dedicated Builder is seated.  
-**QA mode:** Cipher (The Codewright) — code-review voice for architecture, PWA behavior, accessibility, and drift control.  
-**Repo:** `Rishabh1804/planner`  
-**Live target:** `https://rishabh1804.github.io/planner/`  
-**Product title:** Holiday Planner
+## Project
 
----
+Repo: `Rishabh1804/planner`
 
-## Constitutional Layer
+This repository is a static HTML/CSS/JS travel-planning dashboard being evolved into a coherent PWA. The current active workstream is the mobile **Options** tab repair and runtime consolidation.
 
-Holiday Planner is a governed standalone app under the Republic of Codex.
+## Current Priority
 
-The **Constitution of the Republic of Codex v1.1** remains the supreme law for this repo. This repository is separate from Codex for deployment and product clarity, but it follows Codex operating discipline: charter before build, documented decisions, narrow-scope changes, accessibility-first UI, and explicit review of architectural drift.
+Fix the broken mobile Options tab by replacing hybrid/legacy runtime markup with one coherent Options runtime structure.
 
-Codex remains the institutional archive and source of constitutional authority. Planner is a satellite app: independent codebase, shared governance.
+Do **not** solve this with another CSS containment patch. The visible symptoms are:
 
-## What This App Is
+- giant left-side vertical orphan rails
+- clipped text/cards
+- off-canvas horizontal overflow on mobile
+- legacy card/domain styling leaking into the new Options shell
 
-Holiday Planner is a mobile-first PWA for family holiday planning. Its initial seed is the August family honeymoon dashboard, now generalized into a standalone planning app.
+The root problem is structural: new Options shell + old renderer output.
 
-The app should help a family make a trip decision through guided steps:
+## Confirmed GitHub Context
 
-1. Dates
-2. Experience tier
-3. Destination direction
-4. Generated trip story
-5. Options, budget, readiness, and decision signals
+Known recent commits:
 
-The app must reduce cognitive load. The Planner tab is the source of truth; downstream tabs derive from it.
+- `0e5a373e84fb567b18e720f1dbba6906e560c8c1` — restored live `index.html` with Options replacement
+- `53b7d568314197017663159ce553a792fa4a558b` — first Options containment CSS patch
+- `630501ad045920a84cb39d75f41fae8a4433177a` — stronger legacy rail overflow CSS patch
+- `8fe349ba595763656f12b9904bc0775e66bac30f` — bumped PWA cache to v3 and cached `src/ui/options-view.css`
 
-## Product Principles
-
-- **Planner-first:** collect core trip choices once, then generate everything else from that state.
-- **Mobile-first:** no horizontal scrolling as an acceptable steady state.
-- **Accessible touch targets:** interactive controls should target at least 44px height where practical.
-- **Progressive disclosure:** avoid showing every control at once.
-- **Family-friendly pacing:** default logic should protect low-fatigue travel, infant comfort, and recovery time.
-- **Derived budget:** ask for experience tier first; budget is inferred and optionally constrained by a soft cap.
-- **No hard-coded recommendation drift:** destination, budget, stay, flight, and readiness views should derive from shared data/state.
-
-## Architecture
-
-Current phase: static PWA scaffold.
+Current live `index.html` blob SHA seen through the GitHub connector during the 2026-05-05 session:
 
 ```txt
-index.html      # HTML shell and current app markup
-styles.css      # App styles and responsive layout
-app.js          # Data, state, scoring, rendering, event binding
-manifest.json   # PWA metadata
-sw.js           # Service worker
-icon.svg        # App icon
-README.md       # Human-facing repo overview
-docs/
-  CHARTER.md    # Project charter
-  DECISIONS.md  # Decision log
-  ROADMAP.md    # Optional future planning file
+355d739bee4153209ecc0c9269f237a45061e024
 ```
 
-Target phase: split-file architecture.
+## Current Root Cause Assessment
+
+This is not primarily a cache problem.
+
+The new Options shell exists, but old runtime functions still populate Options containers with legacy classes. Those legacy classes are the likely source of mobile overflow and the orphan rail effect.
+
+Confirmed/historical render chain:
+
+```js
+renderAll() ->
+  renderMonthExplorer()
+  renderDynamicBudget()
+  renderScenarioSummary()
+  renderRecommendations()
+  renderScenarioPlanB()
+  renderDerivedTabs()
+```
+
+Primary culprit:
+
+```js
+renderRecommendations()
+```
+
+Secondary culprit:
+
+```js
+renderMonthExplorer()
+```
+
+Also inspect before committing:
+
+```js
+renderDynamicBudget()
+renderScenarioPlanB()
+renderDerivedTabs()
+renderPlannerGate()
+```
+
+Legacy classes that should not be emitted into Options runtime containers:
 
 ```txt
-src/
-  data.js       # plannerData and static catalogs
-  state.js      # storage, migration, trip variables
-  engine.js     # scoring, budget, recommendation logic
-  views.js      # DOM rendering
-  start.js      # event binding and app boot
+.recommendation-card
+.recommendation-head
+.recommendation-tagline
+.destination-card
+.card-domain-*
+.domain-card-*
 ```
 
-Do not split for aesthetics alone. Split when it reduces real maintenance risk.
+## Required IDs to Preserve
 
-## PWA Rules
-
-- App title is **Holiday Planner**. Do not include version labels in the visible title.
-- Manifest `name` should remain `Holiday Planner`.
-- Service worker cache names must be versioned.
-- Avoid trapping stale HTML. If HTML is cached, cache version must be bumped on structural releases.
-- Prefer network-first for navigations, with offline fallback only after network failure.
-- Keep service-worker scope local to this repo path.
-- Do not let Planner service-worker logic interfere with Codex or other GitHub Pages apps.
-
-## Storage Rules
-
-Current storage keys may retain the historical `augustFamilyHoneymoon.*.v431` namespace during migration to avoid breaking saved state.
-
-Future migration target:
+The following IDs are required by existing runtime logic and must remain available:
 
 ```txt
-holidayPlanner.tripVariables.v1
-holidayPlanner.choiceState.v1
-holidayPlanner.discussionNotes.v1
-holidayPlanner.budgetCap.v1
-holidayPlanner.shortlist.v1
+recommendationContext
+scenarioPlanB
+recommendationStack
+shortlistStrip
+comparePanel
+monthStrip
+destinationBoard
+optionsStayCard
+generatedStays
+optionsBudgetCard
+budgetTotal
+budgetSummary
+flightBudget
+hotelBudget
+experienceBudget
+budgetReasons
+budgetBreakdownList
+flightDataNote
+flightOptionList
 ```
 
-Any storage key migration must preserve old data or provide a clear reset path.
+Also preserve `optionsWinnerStrip` if present in the live shell.
 
-## Build and Deployment
+## Correct Patch Direction
 
-This repo is currently static-first. GitHub Pages should be able to publish directly from `main` using root files.
+Patch `index.html` runtime functions directly.
 
-No bundler should be introduced until there is a clear need. If a bundler is added, document:
+Replace Options runtime output with markup using existing `src/ui/options-view.css` classes such as:
 
-- why it is needed;
-- source directory;
-- output directory;
-- deployment path;
-- rollback path.
+```txt
+.options-compact-card
+.options-compact-card__head
+.options-compact-card__title
+.options-compact-card__verdict
+.options-fit-badge
+.options-comparison-chip
+.options-chip-row
+.options-card-actions
+.options-action-chip
+.options-detail-panel
+.options-lens-chip
+.options-shortlist-tray
+.options-budget-panel
+```
 
-## Governance Rules
+Do not create a parallel enhancer in `app.js`.
+Do not create duplicate render implementations.
+Do not add another broad CSS nuke/containment pass unless a small final cleanup is proven necessary after the runtime markup is corrected.
 
-- Major structural changes require an entry in `docs/DECISIONS.md`.
-- New planning modules require an update to `docs/CHARTER.md` or `docs/ROADMAP.md`.
-- UI changes must be checked against mobile width first.
-- Any tab or module that duplicates Planner source-of-truth state should be treated as drift.
-- Keep commits narrow and reviewable.
-- Prefer fixing root causes over patching one visible card.
+## Patch Checklist
 
-## Review Posture
+1. Fetch current `index.html`, `styles.css`, and `src/ui/options-view.css`.
+2. Search inside `index.html` for:
+   - `renderRecommendations`
+   - `renderMonthExplorer`
+   - `renderDynamicBudget`
+   - `renderScenarioPlanB`
+   - `renderDerivedTabs`
+   - `renderPlannerGate`
+3. Identify every write into Options containers.
+4. Replace legacy Options output with coherent `.options-*` structures.
+5. Preserve Planner storage, shortlist logic, score logic, budget derivation, and event delegation.
+6. Confirm no required IDs were removed.
+7. Review diff before commit.
+8. Suggested commit message:
 
-Use **Aurelius** for documentation, product logic, and decision memory.
+```txt
+fix: replace options runtime legacy cards
+```
 
-Use **Cipher** for QA review:
+## Tooling Notes From 2026-05-05 Session
 
-- syntax and boot blockers;
-- broken file paths;
-- service-worker risk;
-- stale-cache risk;
-- accessibility regressions;
-- horizontal overflow;
-- hard-coded data drift;
-- excessive coupling between rendering and scoring.
+- Local `git clone https://github.com/Rishabh1804/planner.git` failed due DNS: `Could not resolve host: github.com`.
+- GitHub connector could fetch metadata and file SHAs.
+- Large `index.html` content was exposed only as an internal blob/download URL in that session, not safely editable full text.
+- No runtime commit was made during that session.
 
-## Current Status
+## Session Handoff
 
-The app has been extracted from a single-file holiday dashboard into a separate PWA repo. The next stabilization pass should verify:
+Detailed handoff log:
 
-- GitHub Pages boot from root `index.html`;
-- manifest installability;
-- service-worker registration and update behavior;
-- mobile layout with no horizontal overflow;
-- Planner step selection behavior;
-- data/state continuity from the old dashboard keys.
+```txt
+docs/session-handoffs/PLANNER_SESSION_HANDOFF_2026-05-05.md
+```
