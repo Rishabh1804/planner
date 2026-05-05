@@ -2,6 +2,8 @@
 
 Use this checklist before and after structural changes.
 
+Before every user-visible release, cross-reference [`docs/BUGS.md`](./BUGS.md) and run the active regression checklist there.
+
 ## QA Snapshot — 2026-05-05 — Live v1 before module wiring
 
 ### Live status
@@ -32,6 +34,7 @@ Use this checklist before and after structural changes.
 - Confirm no steady-state horizontal scroll in Plan mode.
 - Confirm service worker registers without fatal console errors.
 - Confirm saved state survives refresh.
+- Cross-reference `docs/BUGS.md` active regression checklist.
 
 ### Required retest after first wired module
 
@@ -40,6 +43,7 @@ Use this checklist before and after structural changes.
 - Test one clean-browser/no-storage scenario.
 - Confirm no duplicate event handling.
 - Confirm no service-worker stale-cache regression.
+- Cross-reference `docs/BUGS.md` active regression checklist.
 
 ---
 
