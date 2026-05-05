@@ -61,3 +61,33 @@
 
 - A future migration may move to `holidayPlanner.*.v1` keys.
 - Migration must preserve existing data or provide a clear reset path.
+
+## 2026-05-05 — Stabilize live root shell before deeper source split
+
+**Decision:** Keep the production app logic inline in `index.html` temporarily, and reduce root `app.js` to a small service-worker boot guard.
+
+**Rationale:**
+
+- `index.html` already contains the full working Planner runtime.
+- Root `app.js` also contained the same runtime, causing duplicate `DOMContentLoaded` execution risk.
+- `sw.js` still caches `./app.js`, so the file must remain present until the service-worker asset list is changed in a controlled release.
+
+**Consequences:**
+
+- The app can go live from the root shell without double-running the Planner logic.
+- `app.js` remains as a cache-safe boot/registration file.
+- Deeper extraction should start from `src/state` and `src/data`, then move runtime out of inline HTML after parity checks.
+
+## 2026-05-05 — Complete icon asset migration
+
+**Decision:** Point `index.html`, `manifest.json`, and `sw.js` to `./assets/icons/icon.svg`, then remove the obsolete root `icon.svg`.
+
+**Rationale:**
+
+- App assets should live under the `assets/` section.
+- Keeping two icon paths creates drift and makes PWA cache behavior harder to reason about.
+
+**Consequences:**
+
+- The canonical app icon path is now `assets/icons/icon.svg`.
+- Root `icon.svg` should not be reintroduced unless a deployment platform requires it.
