@@ -159,3 +159,21 @@
 - `src/pwa/registration.js` mirrors the current registration behavior as testable helper functions.
 - `src/pwa/index.js` is the stable export boundary for future PWA imports.
 - Future wiring must verify service-worker registration and cache behavior after deployment.
+
+## 2026-05-05 — Add non-wired UI helper scaffolds
+
+**Decision:** Add `src/ui/dom.js`, `src/ui/tabs.js`, and `src/ui/index.js` before extracting screen-specific Planner, Options, Decide, or Ready rendering code.
+
+**Rationale:**
+
+- UI extraction is the riskiest layer because it touches live interaction behavior.
+- Shared DOM and tab helpers create a small boundary that can be reviewed before wiring.
+- Keeping these helpers non-wired preserves the stable live Pages baseline.
+
+**Consequences:**
+
+- The live runtime remains inline in `index.html` for now.
+- `src/ui/dom.js` defines shared DOM utility helpers.
+- `src/ui/tabs.js` defines future tab activation and binding helpers.
+- `src/ui/index.js` is the stable export boundary for future UI imports.
+- Screen-specific UI extraction should happen last and only after parity checks.
