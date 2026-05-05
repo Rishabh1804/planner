@@ -1,15 +1,44 @@
 /* Options view replacement module.
-   Non-wired stylesheet for the clean Options Density + Comparison Cockpit implementation. */
+   Live stylesheet for the clean Options Density + Comparison Cockpit implementation.
+   This file intentionally bridges the new Options shell with legacy runtime-rendered
+   recommendation cards until the runtime renderer is fully extracted. */
 
+html,
+body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.app,
+.panel,
 .options-panel,
+.options-panel *,
 .options-view,
 .options-primary-card,
 .options-cockpit,
 .options-compact-card,
 .options-secondary-panels,
 .options-secondary-panel,
-.options-secondary-panel__body {
+.options-secondary-panel__body,
+.recommendation-stack,
+.recommendation-card,
+.destination-board,
+.month-strip,
+.breakdown-list,
+.flight-option-list {
+  box-sizing: border-box;
   min-width: 0;
+}
+
+.options-panel {
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.options-panel .section-title,
+.options-panel .section-sub {
+  max-width: 100%;
 }
 
 .options-view,
@@ -18,27 +47,42 @@
 .options-comparison-list,
 .options-secondary-panels,
 .options-budget-panel,
-.options-budget-panel__summary {
+.options-budget-panel__summary,
+.options-panel .recommendation-stack {
   display: grid;
 }
 
-.options-view,
+.options-view {
+  width: 100%;
+  max-width: 100%;
+  gap: var(--space-grid-gap, var(--space-3-5, 14px));
+}
+
 .options-cockpit,
 .options-primary-card {
-  gap: var(--space-3, 12px);
+  gap: var(--space-card-gap, var(--space-3, 12px));
 }
 
 .options-comparison-list,
 .options-secondary-panels,
-.options-budget-panel {
-  gap: var(--space-2-5, 10px);
+.options-budget-panel,
+.options-panel .recommendation-stack {
+  gap: var(--space-3, 12px);
+}
+
+.options-panel .card,
+.options-cockpit,
+.options-primary-card,
+.options-secondary-panel {
+  max-width: 100%;
+  border-radius: var(--r-xl, 24px);
 }
 
 .options-cockpit__hero {
   display: grid;
   gap: var(--space-2, 8px);
-  padding: var(--space-3-5, 14px);
-  border-radius: 24px;
+  padding: var(--space-card-pad-comfort, var(--space-4-5, 18px));
+  border-radius: var(--r-xl, 24px);
   background: linear-gradient(145deg, var(--lav-light, #f0ebfb), var(--peach-light, #fef3ea));
   box-shadow: inset 0 0 0 1px rgba(88, 68, 58, 0.08);
 }
@@ -60,31 +104,46 @@
 .options-compact-context,
 .options-budget-panel__summary strong,
 .options-budget-panel__summary p,
-.options-catalog-summary {
+.options-catalog-summary,
+.options-panel .recommendation-card,
+.options-panel .recommendation-card *,
+.options-panel .destination-card,
+.options-panel .destination-card *,
+.options-panel .breakdown-row,
+.options-panel .breakdown-row *,
+.options-panel .flight-option-row,
+.options-panel .flight-option-row * {
   min-width: 0;
+  max-width: 100%;
   overflow-wrap: anywhere;
 }
 
-.options-cockpit__title {
-  margin: 0;
-  color: #493d39;
+.options-cockpit__title,
+.options-primary-card h3,
+.options-panel .card h3 {
+  margin: 0 0 var(--space-2, 8px);
+  color: #4a3833;
   font-family: var(--font-display, Georgia, serif);
-  font-size: clamp(1.18rem, 4vw, 1.65rem);
-  line-height: 1.08;
+  line-height: 1.12;
+}
+
+.options-cockpit__title {
+  font-size: clamp(1.18rem, 4vw, 1.55rem);
 }
 
 .options-cockpit__summary,
-.options-catalog-summary {
+.options-catalog-summary,
+.options-primary-card p {
   margin: 0;
-  color: #5d514c;
+  color: var(--muted, #766d69);
   font-size: var(--fs-body-mobile, 0.94rem);
-  font-weight: 800;
-  line-height: 1.35;
+  font-weight: 750;
+  line-height: 1.45;
 }
 
 .options-catalog-summary {
   padding: var(--space-2-5, 10px);
-  border-radius: 18px;
+  border-radius: var(--r-lg, 18px);
   background: rgba(255, 255, 255, 0.72);
   box-shadow: inset 0 0 0 1px rgba(88, 68, 58, 0.08);
 }
@@ -103,6 +162,7 @@
   border-radius: 20px;
   background: rgba(255, 255, 255, 0.78);
   box-shadow: inset 0 0 0 1px rgba(88, 68, 58, 0.08);
+  color: var(--ink, #3c3432);
   text-align: left;
 }
 
@@ -130,51 +190,70 @@
 
 .options-lens-strip,
 .options-chip-row,
-.options-shortlist-tray {
+.options-shortlist-tray,
+.options-panel .tag-row,
+.options-panel .flight-option-meta,
+.options-panel .budget-reasons {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-2, 8px);
+  max-width: 100%;
 }
 
 .options-lens-chip,
-.options-action-chip {
+.options-action-chip,
+.options-panel .recommendation-card button,
+.options-panel .shortlist-chip {
   min-height: var(--space-touch, 44px);
   border: 0;
   border-radius: var(--r-full, 999px);
-  padding: var(--space-2, 8px) var(--space-3, 12px);
+  padding: var(--space-control-pad-y, 10px) var(--space-control-pad-x, 12px);
   background: #fff;
   color: #4f403c;
   box-shadow: inset 0 0 0 1px rgba(88, 68, 58, 0.10);
+  font-family: var(--font-ui, var(--font-body));
   font-size: var(--fs-button, 0.92rem);
   font-weight: 950;
 }
 
 .options-lens-chip[aria-pressed="true"],
-.options-action-chip.primary {
+.options-action-chip.primary,
+.options-panel .recommendation-card button.primary {
   background: var(--lav-light, #f0ebfb);
   color: var(--lav-text, #6e5e9a);
   box-shadow: inset 0 0 0 2px rgba(110, 94, 154, 0.20);
 }
 
-.options-compact-card {
+.options-compact-card,
+.options-panel .recommendation-card {
   display: grid;
-  gap: var(--space-2, 8px);
-  padding: var(--space-3, 12px);
-  border-radius: 22px;
-  background: #fff;
+  gap: var(--space-2-5, 10px);
+  width: 100%;
+  max-width: 100%;
+  padding: var(--space-card-pad-comfort, var(--space-4-5, 18px));
+  border-radius: var(--r-xl, 24px);
+  background: var(--surface, #fff);
   box-shadow:
     inset 0 0 0 1px rgba(88, 68, 58, 0.08),
     0 6px 18px rgba(74, 55, 47, 0.06);
+  border-left: 0;
 }
 
-.options-compact-card__head {
+.options-panel .recommendation-card::before,
+.options-panel .recommendation-card::after {
+  content: none !important;
+}
+
+.options-compact-card__head,
+.options-panel .recommendation-head {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   gap: var(--space-2, 8px);
   align-items: start;
 }
 
-.options-compact-card__title {
+.options-compact-card__title,
+.options-panel .recommendation-head h4 {
   margin: 0;
   color: #493d39;
   font-size: var(--fs-card-small, 1.06rem);
@@ -182,7 +261,17 @@
   line-height: 1.18;
 }
 
-.options-fit-badge {
+.options-panel .recommendation-tagline,
+.options-compact-card__verdict {
+  margin: 0;
+  color: #5d514c;
+  font-size: var(--fs-body-small, 0.88rem);
+  font-weight: 800;
+  line-height: 1.34;
+}
+
+.options-fit-badge,
+.options-panel .fit-badge {
   min-height: 30px;
   display: inline-flex;
   align-items: center;
@@ -196,34 +285,27 @@
   white-space: nowrap;
 }
 
-.options-compact-card__verdict {
-  margin: 0;
-  color: #5d514c;
-  font-size: var(--fs-body-small, 0.88rem);
-  font-weight: 800;
-  line-height: 1.34;
-}
-
-.options-comparison-chip {
+.options-comparison-chip,
+.options-panel .recommendation-metric,
+.options-panel .recommendation-reason,
+.options-panel .recommendation-warning,
+.options-panel .tag,
+.options-panel .budget-reason {
   min-height: 32px;
   display: inline-flex;
   align-items: center;
   max-width: 100%;
-  padding: var(--space-optical-4, 7px) var(--space-2-5, 10px);
+  padding: var(--space-chip-pad-y, 7px) var(--space-chip-pad-x, 12px);
   border-radius: var(--r-full, 999px);
   background: var(--peach-light, #fef3ea);
   color: #8b5d38;
   font-size: var(--fs-chip-small, 0.76rem);
   font-weight: 950;
-  line-height: 1.15;
+  line-height: 1.18;
   overflow-wrap: anywhere;
 }
 
-.options-chip-row--meta .options-comparison-chip {
-  background: rgba(255, 255, 255, 0.74);
-  color: var(--muted, #766d69);
-}
-
+.options-panel .recommendation-reason,
 .options-comparison-chip[data-tone="good"],
 .options-comparison-chip[data-tone="strong"],
 .options-comparison-chip[data-tone="easy"] {
@@ -231,11 +313,17 @@
   color: var(--sage-text, #3a7060);
 }
 
+.options-panel .recommendation-warning,
 .options-comparison-chip[data-tone="watch"],
 .options-comparison-chip[data-tone="mixed"],
 .options-comparison-chip[data-tone="moderate"] {
   background: var(--amber-light, #fef6e8);
   color: var(--amber-text, #8a6520);
+}
+
+.options-chip-row--meta .options-comparison-chip {
+  background: rgba(255, 255, 255, 0.74);
+  color: var(--muted, #766d69);
 }
 
 .options-comparison-chip[data-tone="risk"],
@@ -245,21 +333,24 @@
   color: var(--rose-text, #9e3e52);
 }
 
-.options-card-actions {
+.options-card-actions,
+.options-panel .recommendation-actions {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--space-2, 8px);
 }
 
-.options-card-actions .options-action-chip {
+.options-card-actions .options-action-chip,
+.options-panel .recommendation-actions button {
   width: 100%;
   justify-content: center;
+  text-align: center;
 }
 
 .options-detail-panel {
   margin-top: var(--space-1, 4px);
   padding: var(--space-3, 12px);
-  border-radius: 18px;
+  border-radius: var(--r-lg, 18px);
   background: rgba(255, 250, 247, 0.94);
   box-shadow: inset 0 0 0 1px rgba(88, 68, 58, 0.08);
 }
@@ -279,9 +370,10 @@
 }
 
 .options-secondary-panel {
-  border-radius: 22px;
-  background: #fff;
-  box-shadow: inset 0 0 0 1px rgba(88, 68, 58, 0.08);
+  border-radius: var(--r-xl, 24px);
+  background: var(--surface, #fff);
+  box-shadow: var(--shadow-soft, 0 8px 24px rgba(74, 55, 47, 0.08));
+  border: 1px solid rgba(88, 68, 58, 0.08);
   overflow: hidden;
 }
 
@@ -291,7 +383,7 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--space-2, 8px);
-  padding: var(--space-3, 12px);
+  padding: var(--space-card-pad, 16px);
   color: #493d39;
   cursor: pointer;
   font-weight: 950;
@@ -303,7 +395,16 @@
 }
 
 .options-secondary-panel__body {
-  padding: 0 var(--space-3, 12px) var(--space-3, 12px);
+  padding: 0 var(--space-card-pad, 16px) var(--space-card-pad, 16px);
+}
+
+.options-panel .month-strip,
+.options-panel .destination-board,
+.options-panel .breakdown-list,
+.options-panel .flight-option-list {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 .options-budget-panel__summary {
@@ -320,6 +421,7 @@
   min-height: var(--space-touch, 44px);
   display: flex;
   align-items: center;
+  gap: var(--space-1-5, 6px);
   min-width: 0;
   padding: var(--space-2, 8px);
   border-radius: 16px;
@@ -330,24 +432,53 @@
   overflow-wrap: anywhere;
 }
 
+.options-budget-panel__figures strong {
+  font: inherit;
+  color: var(--sage-text, #3a7060);
+}
+
 @media (max-width: 760px) {
+  .options-panel .section-title {
+    margin: var(--space-4, 16px) var(--space-1, 4px) var(--space-2, 8px);
+  }
+
+  .options-panel .section-sub {
+    margin: 0 var(--space-1, 4px) var(--space-3, 12px);
+  }
+
+  .options-view {
+    gap: var(--space-3, 12px);
+  }
+
   .options-winner-strip {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .options-compact-card__head,
+  .options-panel .recommendation-head,
   .options-budget-panel__figures {
     grid-template-columns: 1fr;
   }
 
-  .options-fit-badge {
+  .options-fit-badge,
+  .options-panel .fit-badge {
     justify-self: start;
   }
 }
 
 @media (max-width: 420px) {
   .options-winner-strip,
-  .options-card-actions {
+  .options-card-actions,
+  .options-panel .recommendation-actions {
     grid-template-columns: 1fr;
+  }
+
+  .options-cockpit__hero,
+  .options-compact-card,
+  .options-panel .recommendation-card,
+  .options-secondary-panel summary,
+  .options-secondary-panel__body {
+    padding-left: var(--space-3, 12px);
+    padding-right: var(--space-3, 12px);
   }
 }
