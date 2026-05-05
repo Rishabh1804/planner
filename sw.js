@@ -1,11 +1,9 @@
-const CACHE_NAME = 'holiday-planner-v1';
+const CACHE_NAME = 'holiday-planner-v2';
 const STATIC_ASSETS = [
-  './',
-  './index.html',
   './styles.css',
   './app.js',
   './manifest.json',
-  './icon.svg'
+  './assets/icons/icon.svg'
 ];
 
 self.addEventListener('install', (event) => {
@@ -33,10 +31,9 @@ self.addEventListener('fetch', (event) => {
   // Do not trap cross-origin font requests behind stale app shell logic.
   if (url.origin !== self.location.origin) return;
 
+  // Navigation requests should stay fresh and never be served from a stale HTML cache.
   if (request.mode === 'navigate') {
-    event.respondWith(
-      fetch(request).catch(() => caches.match('./index.html'))
-    );
+    event.respondWith(fetch(request));
     return;
   }
 
