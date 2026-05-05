@@ -10,18 +10,20 @@ Use it before changing a feature, tab, module, or release behavior that touches 
 |---|---|---|---|---|
 | `2026-05-05-planner-options.md` | Pair | Planner ↔ Options | Active | Planner flow, recommendation cards, budget derivation, destination ranking |
 | `2026-05-05-planner-decide.md` | Pair | Planner ↔ Decide | Active | Guided Plan builder, scenario exploration, preference signals, decision capture |
+| `2026-05-05-options-ready.md` | Pair | Options ↔ Ready | Active | Destination cards, shortlist logic, selected option flow, booking-readiness checklist |
+| `2026-05-05-data-engine.md` | Pair | Data ↔ Engine | Active | Destination catalog, scoring logic, budget assumptions, recommendation ranking |
+| `2026-05-05-planner-options-decide-compound.md` | Compound | Planner → Options → Decide | Active | Full planning loop, recommendation feedback, decision confidence, signal compounding |
 
 ## Planned synthesis reports
 
 | Priority | Report | Type | Why it matters |
 |---|---|---|---|
-| High | Options ↔ Ready | Pair | Prevent Ready from becoming a second recommendation engine. |
-| High | Data ↔ Engine | Pair | Keep scoring/ranking grounded in explicit catalog data. |
 | High | State ↔ UI | Pair | Prevent state duplication and broken persistence during module wiring. |
+| High | Planner → Options → Ready | Compound | Understand the full setup-to-booking-readiness loop. |
+| High | Planner → Options → Decide → Ready | Compound | Connect setup, recommendations, reactions, and execution readiness into one product loop. |
 | Medium | PWA ↔ Runtime Boot | Pair | Protect service-worker/cache behavior during app.js wiring. |
-| Medium | Planner → Options → Decide | Compound | Understand the full intent-to-shortlist-to-decision loop. |
-| Medium | Planner → Options → Ready | Compound | Understand the full setup-to-booking-readiness loop. |
 | Medium | Bugs ↔ QA ↔ Synthesis | Compound | Convert recurring bugs into reusable product intelligence. |
+| Medium | State → Data → Engine → UI | Compound | Protect modular source extraction and future wired runtime behavior. |
 
 ## Report status definitions
 
@@ -47,6 +49,7 @@ Example:
 
 - Planner ↔ Options says Planner owns intent and Options derives recommendations.
 - Planner ↔ Decide says Planner owns setup and Decide owns scenario exploration.
-- Together, they imply a future compound report: Planner → Options → Decide.
+- Options ↔ Ready says Options recommends and Ready prepares.
+- Together, they imply a future compound report: Planner → Options → Decide → Ready.
 
-That compound report should define how a user moves from setup to recommendation to decision without duplicating state or overloading Planner.
+That compound report should define how a user moves from setup to recommendation to reaction to execution readiness without duplicating state or overloading any one tab.
